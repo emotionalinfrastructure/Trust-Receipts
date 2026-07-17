@@ -1,0 +1,121 @@
+{
+  "receipt_version": "0.1",
+  "receipt_id": "urn:trust-receipt:request:preference-update:001:executed",
+  "event_time": "2026-07-15T14:30:00Z",
+  "created_at": "2026-07-15T14:30:01Z",
+  "schema_id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.schema.json",
+  "issuer": {
+    "organization_id": "org:reference-implementation",
+    "display_name": "AI Trust Receipt Reference Implementation",
+    "verification_uri": "https://example.invalid/trust-receipts/verify"
+  },
+  "agent": {
+    "agent_id": "agent:profile-maintainer",
+    "operator_id": "operator:example-service",
+    "deployment_id": "deployment:prod-us-01",
+    "version": "2026.07.1",
+    "accountable_organization": "Example Service Organization"
+  },
+  "action": {
+    "type": "account.profile.update",
+    "verb": "update",
+    "target": "account:subject-001",
+    "status": "executed",
+    "persistent_change": true,
+    "before_state": {
+      "weekly_summary": false
+    },
+    "after_state": {
+      "weekly_summary": true
+    }
+  },
+  "authority": {
+    "grant_id": "grant:profile-maintenance:001",
+    "granting_party_id": "party:subject-001",
+    "scope": "{\"allowed_actions\":[\"account.profile.update\"],\"allowed_targets\":[\"account:subject-001\"],\"excluded_actions\":[\"account.access.disable\",\"account.payment.update\"],\"max_consequence_class\":\"C2\"}",
+    "granted_at": "2026-07-01T00:00:00Z",
+    "expires_at": "2027-07-01T00:00:00Z",
+    "confirmation_status": "confirmed",
+    "validation_status": "valid"
+  },
+  "objective": {
+    "description": "Maintain the account holder's notification preference when explicitly requested.",
+    "version": "objective-1",
+    "hard_constraints": [
+      "Do not change identity, payment, eligibility, or access-control fields.",
+      "Create a receipt for every attempted persistent change."
+    ]
+  },
+  "material_inputs": [
+    {
+      "evidence_id": "evidence:confirmation:001",
+      "category": "user-confirmation",
+      "provenance": "Account confirmation service event confirmation:001",
+      "materiality": "required",
+      "status": "available",
+      "freshness": "current"
+    },
+    {
+      "evidence_id": "evidence:review:001",
+      "category": "human-review",
+      "provenance": "Independent account-change review event review:001",
+      "materiality": "required",
+      "status": "available",
+      "freshness": "current"
+    }
+  ],
+  "delegation": [
+    {
+      "recipient_id": "agent:preference-writer",
+      "task": "Write the confirmed weekly-summary preference.",
+      "authority_passed": "account.profile.update for account:subject-001 only",
+      "depth": 1,
+      "evidence_returned": true
+    }
+  ],
+  "human_review": {
+    "status": "approved",
+    "authority_to_intervene": true,
+    "reviewer_role": "account-change-reviewer",
+    "reviewed_at": "2026-07-15T14:29:00Z",
+    "evidence_viewed": [],
+    "disposition": "approved"
+  },
+  "consequence": {
+    "class": "C2",
+    "affected_party": true,
+    "notice_required": true,
+    "persistent_change": true,
+    "protected_third_party_information": false
+  },
+  "remedy": {
+    "available": true,
+    "reversible": true,
+    "contestable": true,
+    "restoration_steps": "Restore the recorded before_state after accountable review.",
+    "review_owner": "Example Service Organization",
+    "status_uri": "https://example.invalid/trust-receipts/request:preference-update:001/remedy",
+    "time_limit": "Submit within 30 calendar days of notice."
+  },
+  "privacy": {
+    "retention_basis": "Retain the minimum event evidence required for verification, review, and remedy.",
+    "routine_access_expires": "2027-07-01T00:00:00Z",
+    "access_roles": [
+      "accountable-reviewer",
+      "affected-party-support"
+    ],
+    "prohibited_secondary_uses": [
+      "model-training",
+      "unrelated-profiling"
+    ],
+    "chain_of_thought_excluded": true,
+    "deletion_uri": "https://example.invalid/trust-receipts/request:preference-update:001/privacy"
+  },
+  "relationships": [],
+  "integrity": {
+    "method": "sha-256-digest-demo",
+    "digest": "sha256:1cc2ed164cb8f4b6a677b88160e17ceee6a70125347cb4f27e23a69cc5bbc22c",
+    "canonicalization_profile": "ei-canonical-json-no-floats-v0.1",
+    "verification_status": "unverified"
+  }
+}

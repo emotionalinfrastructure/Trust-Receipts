@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use or evaluate this candidate release, please cite it using the metadata below."
+title: "AI Trust Receipt: Candidate Governance Specification and Reference Implementation"
+type: software
+authors:
+  - family-names: Wright
+    given-names: Brittany
+version: 0.1.0
+date-released: 2026-07-15
+url: "https://github.com/emotionalinfrastructure/Trust-Receipts"
+abstract: >-
+  A candidate governance specification and reference implementation for
+  durable, user-legible, machine-verifiable records of consequential AI actions.

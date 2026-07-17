@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1",
+  "grant_id": "grant:profile-maintenance:001",
+  "granting_party": {
+    "party_id": "party:subject-001",
+    "display_name": "Example Account Holder",
+    "contact_uri": "https://example.invalid/parties/subject-001"
+  },
+  "grantee": {
+    "agent_id": "agent:profile-maintainer",
+    "operator_id": "operator:example-service",
+    "deployment_id": "deployment:prod-us-01"
+  },
+  "objective": {
+    "description": "Maintain the account holder's notification preference when explicitly requested.",
+    "version": "objective-1",
+    "hard_constraints": [
+      "Do not change identity, payment, eligibility, or access-control fields.",
+      "Create a receipt for every attempted persistent change."
+    ],
+    "permitted_preferences": [
+      "Prefer the least disruptive valid update."
+    ],
+    "ambiguity_behavior": "request_confirmation"
+  },
+  "scope": {
+    "allowed_actions": [
+      "account.profile.update"
+    ],
+    "allowed_targets": [
+      "account:subject-001"
+    ],
+    "excluded_actions": [
+      "account.access.disable",
+      "account.payment.update"
+    ],
+    "max_consequence_class": "C2"
+  },
+  "granted_at": "2026-07-01T00:00:00Z",
+  "expires_at": "2027-07-01T00:00:00Z",
+  "confirmation": {
+    "threshold": "independent_human_review",
+    "required_for": [
+      "C2",
+      "C3"
+    ]
+  },
+  "delegation": {
+    "allowed": true,
+    "max_depth": 1,
+    "permitted_recipients": [
+      "agent:preference-writer"
+    ]
+  },
+  "status": "active"
+}

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Overview of the AI Trust Receipt candidate governance specification and reference implementation.">
+<title>AI Trust Receipt — Overview v0.1.0 · Emotional Infrastructure™</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #F5F7F8;
+    color: #0F0F0F;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #1C2B3A;
+    padding: 28px 40px 32px;
+  }
+  .header-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .eyebrow {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #67A9C3;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .version-tag {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    color: #8AAFC0;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .headline {
+    font-size: 38px;
+    font-weight: normal;
+    color: #FFFFFF;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .subhead {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: #A8C8D5;
+    line-height: 1.5;
+    max-width: 580px;
+  }
+
+  .body {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 40px 40px;
+  }
+  .section { margin-bottom: 28px; }
+  .section-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8.5px;
+    letter-spacing: 1.8px;
+    color: #1A6B8A;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .rule {
+    border: none;
+    border-top: 1px solid #C8D6DC;
+    margin-bottom: 12px;
+  }
+  .body-text {
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+  }
+
+  .callout {
+    background: #EDF2F4;
+    border-top: 3px solid #1A6B8A;
+    padding: 12px 16px 14px;
+  }
+  .callout-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #1A6B8A;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .callout-text {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    line-height: 1.55;
+    color: #2A2A2A;
+  }
+
+  .func-table { width: 100%; border-collapse: collapse; }
+  .func-table tr { border-bottom: 1px solid #DDE5E8; }
+  .func-table tr:last-child { border-bottom: none; }
+  .func-table td { padding: 7px 0; vertical-align: top; }
+  .func-id {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #1A6B8A;
+    width: 170px;
+    padding-right: 12px !important;
+    padding-top: 8px !important;
+  }
+  .func-desc {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #1A1A1A;
+  }
+
+  .stats-band {
+    background: #EDF2F4;
+    border-top: 3px solid #1A6B8A;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    padding: 14px 0;
+  }
+  .stat-item { padding: 4px 8px; border-right: 1px solid #C8D6DC; }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1A6B8A;
+    line-height: 1.1;
+    display: block;
+  }
+  .stat-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 7.5px;
+    color: #3A3A3A;
+    line-height: 1.4;
+    margin-top: 3px;
+    display: block;
+  }
+
+  .footer {
+    border-top: 1px solid #C8D6DC;
+    margin-top: 28px;
+    padding-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
+    gap: 8px;
+  }
+  .footer-item,
+  .footer-item a {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 8px;
+    color: #52778A;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  .footer-item a:hover,
+  .footer-item a:focus { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .header { padding: 24px 22px 28px; }
+    .body { padding: 26px 22px 32px; }
+    .header-meta { align-items: flex-start; flex-direction: column; gap: 6px; }
+    .headline { font-size: 32px; }
+    .func-table td { display: block; width: 100%; }
+    .func-id { padding-bottom: 2px !important; }
+    .func-desc { padding-top: 0 !important; padding-bottom: 10px !important; }
+    .stats-band { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(-n+2) { border-bottom: 1px solid #C8D6DC; padding-bottom: 12px; }
+    .stat-item:nth-child(n+3) { padding-top: 12px; }
+    .footer { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: white; }
+    .header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .body { padding: 24px 32px; }
+    .callout, .stats-band { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-meta">
+      <span class="eyebrow">Emotional Infrastructure™ &nbsp;·&nbsp; Public Release</span>
+      <span class="version-tag">v0.1.0 &nbsp;·&nbsp; July 15, 2026</span>
+    </div>
+    <h1 class="headline">AI Trust Receipt</h1>
+    <p class="subhead">A candidate governance specification for verifiable, auditable records of consequential AI actions.</p>
+  </div>
+</header>
+
+<main class="body">
+  <section class="section" aria-labelledby="problem-heading">
+    <h2 class="section-label" id="problem-heading">The Problem</h2>
+    <hr class="rule">
+    <p class="body-text">
+      AI agents increasingly perform or initiate consequential actions on behalf of people—changing access,
+      modifying data, delegating authority, or affecting third parties. Existing records are often operational,
+      fragmented, inaccessible to affected people, or insufficient to reconstruct what occurred, whether valid
+      authorization existed, what evidence informed the action, and how the result can be contested. Financial
+      and commercial systems normalize transaction receipts. AI-mediated actions that materially affect a
+      person’s status, eligibility, access, or resources still lack a broadly adopted equivalent.
+    </p>
+    <aside class="callout">
+      <div class="callout-label">Structural Gap</div>
+      <div class="callout-text">Existing governance frameworks address lifecycle risk, transparency, and human oversight, but there is no broadly adopted, interoperable, user-legible receipt format that couples a consequential AI action to its authority, evidence, outcome, and remedy.</div>
+    </aside>
+  </section>
+
+  <section class="section" aria-labelledby="definition-heading">
+    <h2 class="section-label" id="definition-heading">What the AI Trust Receipt Is</h2>
+    <hr class="rule">
+    <p class="body-text">
+      The AI Trust Receipt is a candidate governance mechanism that couples a consequential AI action to a durable,
+      machine-verifiable event record. The release includes a normative candidate technical specification, an
+      executable reference implementation, machine-readable schemas, a practitioner workbook, and a conformance
+      assessment framework. It is designed to be tested, challenged, independently reviewed, and adapted through
+      documented implementation pathways.
+    </p>
+  </section>
+
+  <section class="section" aria-labelledby="functions-heading">
+    <h2 class="section-label" id="functions-heading">Five Core Functions</h2>
+    <hr class="rule">
+    <table class="func-table">
+      <tbody>
+        <tr>
+          <td class="func-id">Pre-Execution Gate</td>
+          <td class="func-desc">Authority, evidence, and remedy capability must exist before any consequential action executes.</td>
+        </tr>
+        <tr>
+          <td class="func-id">Canonical Event Record</td>
+          <td class="func-desc">One structured object from which the machine receipt, human disclosure, and integrity verification are derived.</td>
+        </tr>
+        <tr>
+          <td class="func-id">Human-Readable Disclosure</td>
+          <td class="func-desc">Rendered from the same canonical record, preventing an independently authored narrative from contradicting the machine record.</td>
+        </tr>
+        <tr>
+          <td class="func-id">R1–R12 Conformance</td>
+          <td class="func-desc">Twelve noncompensatory requirements. Failure of any single requirement cannot be offset by strength in the other eleven.</td>
+        </tr>
+        <tr>
+          <td class="func-id">Remedy Reference</td>
+          <td class="func-desc">A contestation pathway must be operational before execution, rather than supplied as a static policy page after the action.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section" aria-labelledby="verification-heading">
+    <h2 class="section-label" id="verification-heading">Release Verification</h2>
+    <hr class="rule">
+    <div class="stats-band">
+      <div class="stat-item">
+        <span class="stat-num">11/11</span>
+        <span class="stat-label">Automated tests<br>passing</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">9/9</span>
+        <span class="stat-label">Conformance vectors<br>verified</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">12</span>
+        <span class="stat-label">Noncompensatory<br>requirements (R1–R12)</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">5</span>
+        <span class="stat-label">JSON Schema<br>contracts (Draft 2020-12)</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="boundary-heading">
+    <h2 class="section-label" id="boundary-heading">Claim Boundary</h2>
+    <hr class="rule">
+    <p class="body-text">
+      This is a candidate governance and implementation package. It is not an adopted standard, certification program,
+      legal-compliance determination, external audit, or regulatory approval. A receipt records what an accountable
+      system represents as having occurred and the evidence by which that representation can be checked. Trustworthiness
+      depends on truthful inputs, sound governance, operational controls, and independent scrutiny where warranted.
+    </p>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-item">Brittany Wright &nbsp;·&nbsp; Emotional Infrastructure™</div>
+    <div class="footer-item"><a href="mailto:brittanywright@emotionalinfrastructure.org">brittanywright@emotionalinfrastructure.org</a></div>
+    <div class="footer-item"><a href="https://emotionalinfrastructure.org">emotionalinfrastructure.org</a></div>
+  </footer>
+</main>
+</body>
+</html>

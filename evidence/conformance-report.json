@@ -1,0 +1,162 @@
+{
+  "report_version": "0.1",
+  "profile_id": "trust-receipt-conformance-decision-profile",
+  "profile_version": "0.1-rev1",
+  "generated_at": "2026-07-15T23:30:57Z",
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "case_id": "T01",
+      "title": "All requirements pass at C0",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      },
+      "actual": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      },
+      "failed_requirements": [],
+      "partial_requirements": []
+    },
+    {
+      "case_id": "T02",
+      "title": "Noncritical partial at C1",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      },
+      "actual": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      },
+      "failed_requirements": [],
+      "partial_requirements": [
+        "R5"
+      ]
+    },
+    {
+      "case_id": "T03",
+      "title": "Any failure is nonconforming",
+      "matched": true,
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "actual": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "failed_requirements": [
+        "R3"
+      ],
+      "partial_requirements": []
+    },
+    {
+      "case_id": "T04",
+      "title": "Any partial at C3 requires manual control",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      },
+      "actual": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      },
+      "failed_requirements": [],
+      "partial_requirements": [
+        "R5"
+      ]
+    },
+    {
+      "case_id": "T05",
+      "title": "Critical partial at C2 requires manual control",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      },
+      "actual": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      },
+      "failed_requirements": [],
+      "partial_requirements": [
+        "R4"
+      ]
+    },
+    {
+      "case_id": "T06",
+      "title": "Noncritical partial at C2 permits restricted operation",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      },
+      "actual": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      },
+      "failed_requirements": [],
+      "partial_requirements": [
+        "R5"
+      ]
+    },
+    {
+      "case_id": "T07",
+      "title": "Unavailable verification evidence overrides a pass claim",
+      "matched": true,
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "actual": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "failed_requirements": [
+        "R11"
+      ],
+      "partial_requirements": []
+    },
+    {
+      "case_id": "T08",
+      "title": "All requirements pass at C3",
+      "matched": true,
+      "expected": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      },
+      "actual": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      },
+      "failed_requirements": [],
+      "partial_requirements": []
+    },
+    {
+      "case_id": "T09",
+      "title": "Failure at C3 disables agentic operation",
+      "matched": true,
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "actual": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      },
+      "failed_requirements": [
+        "R12"
+      ],
+      "partial_requirements": []
+    }
+  ]
+}

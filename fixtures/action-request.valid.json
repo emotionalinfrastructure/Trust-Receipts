@@ -1,0 +1,48 @@
+{
+  "request_id": "request:preference-update:001",
+  "requested_at": "2026-07-15T14:30:00Z",
+  "agent": {
+    "agent_id": "agent:profile-maintainer",
+    "operator_id": "operator:example-service",
+    "deployment_id": "deployment:prod-us-01",
+    "version": "2026.07.1",
+    "accountable_organization": "Example Service Organization"
+  },
+  "action": {
+    "type": "account.profile.update",
+    "verb": "update",
+    "target": "account:subject-001",
+    "before_state": {
+      "weekly_summary": false
+    },
+    "proposed_after_state": {
+      "weekly_summary": true
+    },
+    "persistent_change": true
+  },
+  "consequence": {
+    "class": "C2",
+    "affected_party": true,
+    "notice_required": true,
+    "rationale": "The persistent account preference directly affects the account holder."
+  },
+  "confirmation": {
+    "status": "confirmed",
+    "confirmed_at": "2026-07-15T14:28:00Z",
+    "confirmation_id": "confirmation:001"
+  },
+  "human_review": {
+    "status": "approved",
+    "reviewer_role": "account-change-reviewer",
+    "review_id": "review:001",
+    "reviewed_at": "2026-07-15T14:29:00Z"
+  },
+  "delegation": [
+    {
+      "recipient_id": "agent:preference-writer",
+      "task": "Write the confirmed weekly-summary preference.",
+      "authority_passed": "account.profile.update for account:subject-001 only",
+      "depth": 1
+    }
+  ]
+}

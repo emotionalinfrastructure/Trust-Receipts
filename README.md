@@ -5,6 +5,8 @@
 
 The AI Trust Receipt is a candidate governance specification and reference implementation for producing durable, user-legible, machine-verifiable records of consequential AI actions.
 
+**[Download the complete candidate v0.1.0 release](release/AI_Trust_Receipt_Complete_Release_v0.1.0.zip)**
+
 AI agents increasingly perform or initiate actions that can change access, modify data, delegate authority, or affect third parties. Existing records are often operational, fragmented, inaccessible to affected people, or insufficient to reconstruct what occurred, whether valid authorization existed, what evidence informed the action, and how the outcome can be contested. The Trust Receipt addresses that infrastructure gap by binding an action to its authority, evidence, result, integrity state, and remedy pathway.
 
 ## Release contents
@@ -72,7 +74,7 @@ Canonical complete-release ZIP SHA-256:
 e29b0f453dc330f3030f706883939291a56d0b0f2d6005613052e86004c222b3
 ```
 
-The release also includes `SHA256SUMS.txt` and `release-manifest.json` for artifact-level verification.
+The complete ZIP contains its own `SHA256SUMS.txt` and `release-manifest.json` for artifact-level verification. Repository-level release verification is available under `release/`.
 
 ## Claim boundary
 

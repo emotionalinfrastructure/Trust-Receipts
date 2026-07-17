@@ -1,0 +1,34 @@
+{
+  "profile_id": "trust-receipt-conformance-decision-profile",
+  "profile_version": "0.1-rev1",
+  "status": "candidate",
+  "decision_model": "noncompensatory",
+  "result_values": ["pass", "partial", "fail"],
+  "critical_requirements_c2_c3": ["R1", "R2", "R4", "R8", "R10", "R11", "R12"],
+  "requirements": [
+    {"id": "R1", "title": "Durable receipt by event state"},
+    {"id": "R2", "title": "Actor and accountability identity"},
+    {"id": "R3", "title": "Action and state change"},
+    {"id": "R4", "title": "Authority bound to action"},
+    {"id": "R5", "title": "Material inputs and provenance"},
+    {"id": "R6", "title": "Delegation and human oversight"},
+    {"id": "R7", "title": "Consequence and affected-party status"},
+    {"id": "R8", "title": "Remedy and accountable review"},
+    {"id": "R9", "title": "Retention, access, and secondary use"},
+    {"id": "R10", "title": "Protected and excluded content"},
+    {"id": "R11", "title": "Cross-format consistency and verification"},
+    {"id": "R12", "title": "Safe failure when evidence is unavailable"}
+  ],
+  "overall_rules": {
+    "conforms": "all_pass",
+    "conditionally_conforms": "no_fail_and_any_partial",
+    "does_not_conform": "any_fail"
+  },
+  "deployment_rules": [
+    {"priority": 1, "condition": "does_not_conform", "execution_mode": "disabled_or_manual_control"},
+    {"priority": 2, "condition": "c3_any_partial", "execution_mode": "manual_control"},
+    {"priority": 3, "condition": "c2_critical_partial", "execution_mode": "manual_control"},
+    {"priority": 4, "condition": "conditional", "execution_mode": "restricted_agentic_with_time_bounded_remediation"},
+    {"priority": 5, "condition": "conforms", "execution_mode": "approved_boundary"}
+  ]
+}

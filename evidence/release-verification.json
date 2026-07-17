@@ -1,0 +1,80 @@
+{
+  "manifest_version": "0.1",
+  "candidate_version": "0.1.0",
+  "generated_at": "2026-07-15T23:33:08Z",
+  "json_parse": {
+    "checked": 10,
+    "passed": 10,
+    "files": [
+      {
+        "path": "fixtures/action-request.valid.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "fixtures/authority-grant.valid.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "fixtures/conformance-cases.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "fixtures/material-evidence.valid.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "profiles/conformance-profile.v0.1.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "schemas/action-request.schema.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "schemas/authority-grant.schema.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "schemas/conformance-assessment.schema.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "schemas/material-evidence.schema.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "schemas/trust-receipt.schema.json",
+        "valid": true,
+        "error": null
+      }
+    ]
+  },
+  "unit_tests": {
+    "passed": true,
+    "return_code": 0,
+    "output": "{\n  \"receipt\": \"/tmp/tmpd7xorlv3/receipt.json\",\n  \"gate\": {\n    \"decision\": \"allow\",\n    \"failures\": []\n  }\n}\n{\n  \"receipt_id\": \"urn:trust-receipt:request:preference-update:001:executed\",\n  \"verified\": true\n}\ntest_all_conformance_vectors_match (test_harness.TrustReceiptHarnessTests.test_all_conformance_vectors_match) ... ok\ntest_cli_generates_and_verifies_receipt (test_harness.TrustReceiptHarnessTests.test_cli_generates_and_verifies_receipt) ... ok\ntest_denied_receipt_records_no_state_change (test_harness.TrustReceiptHarnessTests.test_denied_receipt_records_no_state_change) ... ok\ntest_out_of_scope_target_fails_closed (test_harness.TrustReceiptHarnessTests.test_out_of_scope_target_fails_closed) ... ok\ntest_receipt_is_schema_valid_and_human_projection_matches (test_harness.TrustReceiptHarnessTests.test_receipt_is_schema_valid_and_human_projection_matches) ... ok\ntest_reference_inputs_match_schemas (test_harness.TrustReceiptHarnessTests.test_reference_inputs_match_schemas) ... ok\ntest_stale_required_evidence_fails_closed (test_harness.TrustReceiptHarnessTests.test_stale_required_evidence_fails_closed) ... ok\ntest_tampering_invalidates_digest (test_harness.TrustReceiptHarnessTests.test_tampering_invalidates_digest) ... ok\ntest_unavailable_remedy_blocks_c2 (test_harness.TrustReceiptHarnessTests.test_unavailable_remedy_blocks_c2) ... ok\ntest_valid_pre_execution_gate_allows (test_harness.TrustReceiptHarnessTests.test_valid_pre_execution_gate_allows) ... ok\ntest_verification_status_is_integrity_protected (test_harness.TrustReceiptHarnessTests.test_verification_status_is_integrity_protected) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.007s\n\nOK"
+  },
+  "conformance_vectors": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  },
+  "example_receipt_integrity_verified": true,
+  "artifact_digests": {
+    "docs/Trust_Receipt_Technical_Specification_v0.1.md": "sha256:5ff11461d5ccdeb7c10ecb04b3d11dc0f0f32c52d273579e48ee0469ae6937fe",
+    "dist/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf": "sha256:b9271b90fa5793b340f2a32f013868598243cb501f7c696b5c5762bd400a477d",
+    "dist/trust_receipt_reference-0.1.0-py3-none-any.whl": "sha256:7bd1712442908392ffce3804261eca40d721878c98df5c4d473626ed0d4f2604",
+    "evidence/conformance-report.json": "sha256:db154ea80eb1831d6fbdbf5498bea33192334d22696925812ac0505514838673",
+    "evidence/example-receipt.json": "sha256:4492d5c7d3a1a0605498592fb0d25e0c06125b7136616ac080a8b5d0f77b9bb1"
+  },
+  "claim_boundary": "Reference implementation evidence only; not certification or external audit evidence."
+}

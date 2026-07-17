@@ -1,0 +1,106 @@
+{
+  "fixture_version": "0.1",
+  "description": "Normative positive and negative vectors for the noncompensatory R1-R12 decision profile.",
+  "cases": [
+    {
+      "case_id": "T01",
+      "title": "All requirements pass at C0",
+      "consequence_class": "C0",
+      "default_result": "pass",
+      "results": {},
+      "expected": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      }
+    },
+    {
+      "case_id": "T02",
+      "title": "Noncritical partial at C1",
+      "consequence_class": "C1",
+      "default_result": "pass",
+      "results": {"R5": "partial"},
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      }
+    },
+    {
+      "case_id": "T03",
+      "title": "Any failure is nonconforming",
+      "consequence_class": "C1",
+      "default_result": "pass",
+      "results": {"R3": "fail"},
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      }
+    },
+    {
+      "case_id": "T04",
+      "title": "Any partial at C3 requires manual control",
+      "consequence_class": "C3",
+      "default_result": "pass",
+      "results": {"R5": "partial"},
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      }
+    },
+    {
+      "case_id": "T05",
+      "title": "Critical partial at C2 requires manual control",
+      "consequence_class": "C2",
+      "default_result": "pass",
+      "results": {"R4": "partial"},
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "manual_control"
+      }
+    },
+    {
+      "case_id": "T06",
+      "title": "Noncritical partial at C2 permits restricted operation",
+      "consequence_class": "C2",
+      "default_result": "pass",
+      "results": {"R5": "partial"},
+      "expected": {
+        "overall_decision": "conditionally_conforms",
+        "execution_mode": "restricted_agentic_with_time_bounded_remediation"
+      }
+    },
+    {
+      "case_id": "T07",
+      "title": "Unavailable verification evidence overrides a pass claim",
+      "consequence_class": "C1",
+      "default_result": "pass",
+      "results": {},
+      "evidence_available": {"R11": false},
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      }
+    },
+    {
+      "case_id": "T08",
+      "title": "All requirements pass at C3",
+      "consequence_class": "C3",
+      "default_result": "pass",
+      "results": {},
+      "expected": {
+        "overall_decision": "conforms",
+        "execution_mode": "approved_boundary"
+      }
+    },
+    {
+      "case_id": "T09",
+      "title": "Failure at C3 disables agentic operation",
+      "consequence_class": "C3",
+      "default_result": "pass",
+      "results": {"R12": "fail"},
+      "expected": {
+        "overall_decision": "does_not_conform",
+        "execution_mode": "disabled_or_manual_control"
+      }
+    }
+  ]
+}

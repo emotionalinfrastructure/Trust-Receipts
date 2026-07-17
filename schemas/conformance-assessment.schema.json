@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/conformance-assessment.v0.1.schema.json",
+  "title": "Trust Receipt Conformance Assessment v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "assessment_id",
+    "profile_version",
+    "evaluated_at",
+    "consequence_class",
+    "requirement_results",
+    "overall_decision",
+    "execution_mode"
+  ],
+  "properties": {
+    "assessment_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "profile_version": {"type": "string", "minLength": 1, "maxLength": 64},
+    "evaluated_at": {"type": "string", "format": "date-time"},
+    "consequence_class": {"enum": ["C0", "C1", "C2", "C3"]},
+    "requirement_results": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requirement_id", "result", "evidence_available", "evidence_references", "gaps"],
+        "properties": {
+          "requirement_id": {"pattern": "^R(?:[1-9]|1[0-2])$"},
+          "result": {"enum": ["pass", "partial", "fail"]},
+          "evidence_available": {"type": "boolean"},
+          "evidence_references": {"type": "array", "items": {"type": "string"}, "maxItems": 100},
+          "gaps": {"type": "array", "items": {"type": "string"}, "maxItems": 100},
+          "owner": {"type": "string", "minLength": 1, "maxLength": 200},
+          "due_date": {"type": "string", "format": "date"},
+          "operating_restriction": {"type": "string", "minLength": 1, "maxLength": 1000},
+          "verification_method": {"type": "string", "minLength": 1, "maxLength": 1000}
+        }
+      }
+    },
+    "overall_decision": {"enum": ["conforms", "conditionally_conforms", "does_not_conform", "receipt_profile_not_triggered"]},
+    "execution_mode": {"enum": ["approved_boundary", "restricted_agentic_with_time_bounded_remediation", "manual_control", "disabled_or_manual_control", "outside_receipt_profile"]},
+    "failed_requirements": {"type": "array", "uniqueItems": true, "items": {"pattern": "^R(?:[1-9]|1[0-2])$"}},
+    "partial_requirements": {"type": "array", "uniqueItems": true, "items": {"pattern": "^R(?:[1-9]|1[0-2])$"}}
+  }
+}
+

@@ -1,0 +1,117 @@
+{
+  "release_id": "ai-trust-receipt-complete-release-v0.1",
+  "status": "candidate",
+  "generated_at": "2026-07-15T23:41:47Z",
+  "payload_artifact_count": 19,
+  "verification": {
+    "automated_tests": {
+      "passed": 11,
+      "total": 11
+    },
+    "conformance_vectors": {
+      "passed": 9,
+      "total": 9
+    },
+    "example_receipt_integrity_verified": true,
+    "wheel_installation_verified": true,
+    "source_archive_extraction_verified": true
+  },
+  "claim_boundary": "Candidate reference package; not certification, external audit, or regulator approval.",
+  "artifacts": [
+    {
+      "path": "00_READ_ME_FIRST.md",
+      "size_bytes": 2180,
+      "sha256": "a483499bd86b2cafffbf5f11db5e86292a23b8dc008c611a0ccad8d20d3a444d"
+    },
+    {
+      "path": "01_Workbook/AI_Trust_Receipt_Workbook_Candidate_v0.1_REVISED.pdf",
+      "size_bytes": 2542774,
+      "sha256": "b21c2db1d8e2f51b7d7edffebd24aff455bb9c40f3d62202e65d015e7d01e4b3"
+    },
+    {
+      "path": "01_Workbook/Trust_Receipt_Conformance_Protocol_Insert_v0.1.pdf",
+      "size_bytes": 115796,
+      "sha256": "c52db5fdafdc38f5ba7ca0700d25c5fb458b5520e3020a4dc945fe08c18b02a9"
+    },
+    {
+      "path": "02_Technical_Specification/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf",
+      "size_bytes": 95086,
+      "sha256": "b9271b90fa5793b340f2a32f013868598243cb501f7c696b5c5762bd400a477d"
+    },
+    {
+      "path": "02_Technical_Specification/Trust_Receipt_Technical_Specification_v0.1.md",
+      "size_bytes": 31631,
+      "sha256": "5ff11461d5ccdeb7c10ecb04b3d11dc0f0f32c52d273579e48ee0469ae6937fe"
+    },
+    {
+      "path": "03_Reference_Implementation/trust-receipt-reference-v0.1.zip",
+      "size_bytes": 160601,
+      "sha256": "301603d75c3a2ef8760ce071a38761a1b381445f267dca0d5651c724340a86b1"
+    },
+    {
+      "path": "03_Reference_Implementation/trust_receipt_reference-0.1.0-py3-none-any.whl",
+      "size_bytes": 22826,
+      "sha256": "7bd1712442908392ffce3804261eca40d721878c98df5c4d473626ed0d4f2604"
+    },
+    {
+      "path": "04_Machine_Readable/reference-conformance-profile.v0.1.json",
+      "size_bytes": 1735,
+      "sha256": "54c44f5e549339074989cd48c2b4788ce668872b2a8f7e3d74b671021fef6072"
+    },
+    {
+      "path": "04_Machine_Readable/schemas/action-request.schema.json",
+      "size_bytes": 3554,
+      "sha256": "e92453eefde878e0568d3ae4a17ce9170579f3221d76b9c05daf4336441c7644"
+    },
+    {
+      "path": "04_Machine_Readable/schemas/authority-grant.schema.json",
+      "size_bytes": 4637,
+      "sha256": "72b921c7b4b9587aa125ac34f21037630bc16482b574b5ded55ff4e0fead18ff"
+    },
+    {
+      "path": "04_Machine_Readable/schemas/conformance-assessment.schema.json",
+      "size_bytes": 2294,
+      "sha256": "1b46a829a68b69bcd7c53293885160e2a1dd953635ac95e69392b066f193da10"
+    },
+    {
+      "path": "04_Machine_Readable/schemas/material-evidence.schema.json",
+      "size_bytes": 1492,
+      "sha256": "9705989919fe1d70f8a07dff8a7fc893f7d22caaf4032f7d25e45c31daeaf1c7"
+    },
+    {
+      "path": "04_Machine_Readable/schemas/trust-receipt.schema.json",
+      "size_bytes": 8982,
+      "sha256": "2581063ef10ab11e93e6c23255ea3c820e5e9a254c2bad7d35a9fcbc8229bcb8"
+    },
+    {
+      "path": "04_Machine_Readable/workbook-conformance-decision-profile.v0.1.json",
+      "size_bytes": 9661,
+      "sha256": "e60a682003bc69495b5e50a4bd0be1afa879186d1eb518d2568b8f30d889fa84"
+    },
+    {
+      "path": "05_Verification_Evidence/conformance-report.json",
+      "size_bytes": 4422,
+      "sha256": "db154ea80eb1831d6fbdbf5498bea33192334d22696925812ac0505514838673"
+    },
+    {
+      "path": "05_Verification_Evidence/conformance-report.md",
+      "size_bytes": 1322,
+      "sha256": "abec510f7309d6e8110baf5bc2530bff145adee06ddff067c90677366e8ed95b"
+    },
+    {
+      "path": "05_Verification_Evidence/example-receipt.json",
+      "size_bytes": 4283,
+      "sha256": "4492d5c7d3a1a0605498592fb0d25e0c06125b7136616ac080a8b5d0f77b9bb1"
+    },
+    {
+      "path": "05_Verification_Evidence/example-receipt.txt",
+      "size_bytes": 1329,
+      "sha256": "6792e36823df3fe403c62c230bcb36a18a6c42507c1b6cb32233565f043c7fb8"
+    },
+    {
+      "path": "05_Verification_Evidence/release-verification.json",
+      "size_bytes": 4109,
+      "sha256": "65e5ba21410fe2600c25f47459c8a77ff1206912618357c968278f8ab6b231fa"
+    }
+  ]
+}

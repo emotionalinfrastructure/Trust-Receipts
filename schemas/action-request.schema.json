@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/action-request.v0.1.schema.json",
+  "title": "Trust Receipt Action Request v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id",
+    "requested_at",
+    "agent",
+    "action",
+    "consequence",
+    "confirmation",
+    "human_review"
+  ],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "requested_at": {"type": "string", "format": "date-time"},
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent_id", "operator_id", "accountable_organization"],
+      "properties": {
+        "agent_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "operator_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "deployment_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "version": {"type": "string", "minLength": 1, "maxLength": 100},
+        "accountable_organization": {"type": "string", "minLength": 1, "maxLength": 200}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "verb", "target", "before_state", "proposed_after_state", "persistent_change"],
+      "properties": {
+        "type": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$"},
+        "verb": {"type": "string", "minLength": 1, "maxLength": 80},
+        "target": {"type": "string", "minLength": 1, "maxLength": 200},
+        "before_state": {"type": ["object", "null"]},
+        "proposed_after_state": {"type": ["object", "null"]},
+        "persistent_change": {"type": "boolean"}
+      }
+    },
+    "consequence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "affected_party", "notice_required"],
+      "properties": {
+        "class": {"enum": ["C0", "C1", "C2", "C3"]},
+        "affected_party": {"type": "boolean"},
+        "notice_required": {"type": "boolean"},
+        "rationale": {"type": "string", "minLength": 1, "maxLength": 1200}
+      }
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["not_required", "pending", "confirmed", "denied"]},
+        "confirmed_at": {"type": "string", "format": "date-time"},
+        "confirmation_id": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["none", "pending", "approved", "rejected"]},
+        "reviewer_role": {"type": "string", "minLength": 1, "maxLength": 160},
+        "review_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "reviewed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "delegation": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recipient_id", "task", "authority_passed", "depth"],
+        "properties": {
+          "recipient_id": {"type": "string", "minLength": 1, "maxLength": 160},
+          "task": {"type": "string", "minLength": 1, "maxLength": 500},
+          "authority_passed": {"type": "string", "minLength": 1, "maxLength": 500},
+          "depth": {"type": "integer", "minimum": 1, "maximum": 10}
+        }
+      }
+    }
+  }
+}
+

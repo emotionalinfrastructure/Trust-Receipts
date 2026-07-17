@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.schema.json",
+  "title": "AI Trust Receipt v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_version",
+    "receipt_id",
+    "event_time",
+    "created_at",
+    "issuer",
+    "agent",
+    "action",
+    "authority",
+    "objective",
+    "material_inputs",
+    "delegation",
+    "human_review",
+    "consequence",
+    "remedy",
+    "privacy",
+    "relationships",
+    "integrity"
+  ],
+  "properties": {
+    "receipt_version": {"const": "0.1"},
+    "receipt_id": {"type": "string", "pattern": "^urn:trust-receipt:[A-Za-z0-9._:-]{3,200}$"},
+    "event_time": {"type": "string", "format": "date-time"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "schema_id": {"type": "string", "format": "uri"},
+    "issuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["organization_id", "display_name", "verification_uri"],
+      "properties": {
+        "organization_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 200},
+        "verification_uri": {"type": "string", "format": "uri"}
+      }
+    },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent_id", "operator_id", "accountable_organization"],
+      "properties": {
+        "agent_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "operator_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "deployment_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "version": {"type": "string", "minLength": 1, "maxLength": 100},
+        "accountable_organization": {"type": "string", "minLength": 1, "maxLength": 200},
+        "review_channel": {"type": "string", "format": "uri"}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "verb", "target", "status", "persistent_change", "before_state", "after_state"],
+      "properties": {
+        "type": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]{2,127}$"},
+        "verb": {"type": "string", "minLength": 1, "maxLength": 80},
+        "target": {"type": "string", "minLength": 1, "maxLength": 200},
+        "status": {"enum": ["attempted", "executed", "denied", "delegated", "escalated", "reversed", "expired"]},
+        "persistent_change": {"type": "boolean"},
+        "before_state": {"type": ["object", "null"]},
+        "after_state": {"type": ["object", "null"]},
+        "exception_code": {"type": "string", "minLength": 1, "maxLength": 160}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grant_id", "granting_party_id", "scope", "granted_at", "expires_at", "confirmation_status", "validation_status"],
+      "properties": {
+        "grant_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "granting_party_id": {"type": "string", "minLength": 1, "maxLength": 160},
+        "scope": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "granted_at": {"type": "string", "format": "date-time"},
+        "expires_at": {"type": "string", "format": "date-time"},
+        "confirmation_status": {"enum": ["not_required", "confirmed", "pending", "denied"]},
+        "validation_status": {"enum": ["valid", "invalid", "expired", "revoked", "out_of_scope"]}
+      }
+    },
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "version", "hard_constraints"],
+      "properties": {
+        "description": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "version": {"type": "string", "minLength": 1, "maxLength": 64},
+        "hard_constraints": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 500},
+          "maxItems": 50
+        }
+      }
+    },
+    "material_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "category", "provenance", "materiality", "status", "freshness"],
+        "properties": {
+          "evidence_id": {"type": "string", "minLength": 1, "maxLength": 160},
+          "category": {"type": "string", "minLength": 1, "maxLength": 160},
+          "provenance": {"type": "string", "minLength": 1, "maxLength": 500},
+          "materiality": {"enum": ["required", "supporting"]},
+          "status": {"enum": ["available", "disputed", "incomplete", "unavailable"]},
+          "freshness": {"enum": ["current", "stale", "unknown"]}
+        }
+      }
+    },
+    "delegation": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recipient_id", "task", "authority_passed", "depth", "evidence_returned"],
+        "properties": {
+          "recipient_id": {"type": "string", "minLength": 1, "maxLength": 160},
+          "task": {"type": "string", "minLength": 1, "maxLength": 500},
+          "authority_passed": {"type": "string", "minLength": 1, "maxLength": 500},
+          "depth": {"type": "integer", "minimum": 1, "maximum": 10},
+          "evidence_returned": {"type": "boolean"}
+        }
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authority_to_intervene"],
+      "properties": {
+        "status": {"enum": ["none", "pending", "approved", "rejected"]},
+        "reviewer_role": {"type": "string", "minLength": 1, "maxLength": 160},
+        "evidence_viewed": {"type": "array", "items": {"type": "string"}, "maxItems": 100},
+        "authority_to_intervene": {"type": "boolean"},
+        "disposition": {"type": "string", "minLength": 1, "maxLength": 500},
+        "reviewed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "consequence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "affected_party", "notice_required", "persistent_change"],
+      "properties": {
+        "class": {"enum": ["C0", "C1", "C2", "C3"]},
+        "affected_party": {"type": "boolean"},
+        "notice_required": {"type": "boolean"},
+        "persistent_change": {"type": "boolean"},
+        "protected_third_party_information": {"type": "boolean"}
+      }
+    },
+    "remedy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "reversible", "contestable", "review_owner", "status_uri", "time_limit"],
+      "properties": {
+        "available": {"type": "boolean"},
+        "reversible": {"type": "boolean"},
+        "contestable": {"type": "boolean"},
+        "restoration_steps": {"type": "string", "minLength": 1, "maxLength": 2000},
+        "review_owner": {"type": "string", "minLength": 1, "maxLength": 200},
+        "status_uri": {"type": "string", "format": "uri"},
+        "time_limit": {"type": "string", "minLength": 1, "maxLength": 200}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retention_basis", "routine_access_expires", "access_roles", "prohibited_secondary_uses", "chain_of_thought_excluded"],
+      "properties": {
+        "retention_basis": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "routine_access_expires": {"type": "string", "format": "date-time"},
+        "access_roles": {"type": "array", "minItems": 1, "maxItems": 50, "items": {"type": "string"}},
+        "prohibited_secondary_uses": {"type": "array", "minItems": 1, "maxItems": 50, "items": {"type": "string"}},
+        "chain_of_thought_excluded": {"const": true},
+        "deletion_uri": {"type": "string", "format": "uri"}
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "receipt_id"],
+        "properties": {
+          "type": {"enum": ["supersedes", "reverses", "follows", "delegated_from", "remedies"]},
+          "receipt_id": {"type": "string", "pattern": "^urn:trust-receipt:[A-Za-z0-9._:-]{3,200}$"}
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "digest", "canonicalization_profile", "verification_status"],
+      "properties": {
+        "method": {"enum": ["sha-256-digest-demo", "digital-signature"]},
+        "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "canonicalization_profile": {"type": "string", "minLength": 1, "maxLength": 160},
+        "verification_status": {"enum": ["unverified", "verified", "failed"]},
+        "key_id": {"type": "string", "minLength": 1, "maxLength": 500}
+      }
+    }
+  }
+}

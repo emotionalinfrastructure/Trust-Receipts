@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/material-evidence.v0.1.schema.json",
+  "title": "Trust Receipt Material Evidence v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence_set_id", "items", "receipt_service_available", "remedy_service_available"],
+  "properties": {
+    "evidence_set_id": {"type": "string", "minLength": 1, "maxLength": 160},
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "category", "provenance", "materiality", "status", "freshness"],
+        "properties": {
+          "evidence_id": {"type": "string", "minLength": 1, "maxLength": 160},
+          "category": {"type": "string", "minLength": 1, "maxLength": 160},
+          "provenance": {"type": "string", "minLength": 1, "maxLength": 500},
+          "materiality": {"enum": ["required", "supporting"]},
+          "status": {"enum": ["available", "disputed", "incomplete", "unavailable"]},
+          "freshness": {"enum": ["current", "stale", "unknown"]},
+          "observed_at": {"type": "string", "format": "date-time"},
+          "value_reference": {"type": "string", "minLength": 1, "maxLength": 500}
+        }
+      }
+    },
+    "receipt_service_available": {"type": "boolean"},
+    "remedy_service_available": {"type": "boolean"}
+  }
+}

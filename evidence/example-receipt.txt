@@ -1,0 +1,49 @@
+AI TRUST RECEIPT
+================
+Receipt: urn:trust-receipt:request:preference-update:001:executed
+Event time: 2026-07-15T14:30:00Z
+Created: 2026-07-15T14:30:01Z
+
+ACTION
+Status: executed
+Type: account.profile.update
+Verb: update
+Target: account:subject-001
+Persistent change: true
+
+ACCOUNTABILITY AND AUTHORITY
+Agent: agent:profile-maintainer
+Operator: operator:example-service
+Accountable organization: Example Service Organization
+Grant: grant:profile-maintenance:001 (valid)
+Confirmation: confirmed
+
+CONSEQUENCE AND REVIEW
+Class: C2
+Affected party: true
+Notice required: true
+Human review: approved
+
+MATERIAL EVIDENCE
+  - evidence:confirmation:001: available / current (required)
+  - evidence:review:001: available / current (required)
+
+DELEGATION
+  - agent:preference-writer at depth 1: Write the confirmed weekly-summary preference.
+
+RELATED RECEIPTS
+  - None
+
+REMEDY
+Available: true
+Contestable: true
+Review owner: Example Service Organization
+Status: https://example.invalid/trust-receipts/request:preference-update:001/remedy
+
+INTEGRITY
+Method: sha-256-digest-demo
+Profile: ei-canonical-json-no-floats-v0.1
+Digest: sha256:1cc2ed164cb8f4b6a677b88160e17ceee6a70125347cb4f27e23a69cc5bbc22c
+Recorded verification status: unverified
+
+This receipt is an event record, not a claim that the action was fair, lawful, or correct.
