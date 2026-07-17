@@ -47,7 +47,7 @@ def main() -> int:
 
     artifacts = [
         ROOT / "docs/Trust_Receipt_Technical_Specification_v0.1.md",
-        ROOT / "dist/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf",
+        ROOT / "docs/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf",
         ROOT / "dist/trust_receipt_reference-0.1.0-py3-none-any.whl",
         ROOT / "evidence/conformance-report.json",
         ROOT / "evidence/example-receipt.json",
