@@ -1,0 +1,75 @@
+AI TRUST RECEIPT — LICENSING NOTICE
+
+Copyright 2026 Brittany Wright
+
+All rights are reserved except for the permissions expressly granted under
+the licenses identified below.
+
+This repository uses a scope-based dual-license model.
+
+1. APACHE LICENSE 2.0
+
+The Apache License, Version 2.0 applies to the functional, executable, and
+machine-readable implementation components of the AI Trust Receipt,
+including:
+
+- source code under src/
+- command-line and verification tools under tools/
+- tests under tests/
+- JSON Schemas under schemas/
+- conformance profiles under profiles/
+- fixtures and conformance vectors under fixtures/
+- Python packaging and build configuration
+- compiled software distributions under dist/
+- machine-readable JSON implementation and verification artifacts
+
+The complete terms appear in LICENSE-APACHE-2.0.txt.
+SPDX identifier: Apache-2.0
+
+2. CREATIVE COMMONS ATTRIBUTION 4.0 INTERNATIONAL
+
+Creative Commons Attribution 4.0 International applies to the
+human-readable research, specification, instructional, and explanatory
+materials, including:
+
+- technical specification prose
+- workbooks and practitioner materials
+- documentation, diagrams, and overview pages
+- narrative conformance and verification reports
+- release notes and package guidance
+- README and citation materials
+
+The complete terms appear in LICENSE-CC-BY-4.0.txt.
+SPDX identifier: CC-BY-4.0
+
+3. MIXED AND PACKAGED DISTRIBUTIONS
+
+A ZIP archive, wheel, release directory, or other container does not change
+the license that applies to an individual component. Components retain the
+license assigned by their function and format above. If an individual file
+contains a separate license or attribution notice, that notice controls for
+that file. Third-party materials, if any, remain subject to their respective
+licenses.
+
+4. ATTRIBUTION
+
+For CC BY 4.0 materials, a reasonable attribution is:
+
+Brittany Wright, "AI Trust Receipt: Candidate Governance Specification and
+Reference Implementation," v0.1.0, Emotional Infrastructure, 2026.
+https://github.com/emotionalinfrastructure/Trust-Receipts
+
+Users must indicate when they modify CC BY 4.0 materials and include a link
+or reference to the applicable license. Redistributions of Apache-licensed
+components must preserve the notices required by Apache License 2.0.
+
+5. NAMES, MARKS, AND ENDORSEMENT
+
+No license granted here authorizes use of a name, logo, service mark, or
+trademark beyond what is reasonably necessary for attribution and accurate
+description of origin. No use may imply sponsorship, certification,
+regulatory approval, adoption as a standard, or endorsement by Brittany
+Wright or Emotional Infrastructure.
+
+Questions about licensing or uses outside these terms may be directed to:
+brittanywright@emotionalinfrastructure.org
