@@ -80,6 +80,15 @@ The complete ZIP contains its own `SHA256SUMS.txt` and `release-manifest.json` f
 
 This is a candidate governance and implementation package. It is not an adopted standard, certification program, legal-compliance determination, external audit, or regulatory approval. A receipt records what an accountable system represents as having occurred and the evidence by which that representation can be checked. Trustworthiness depends on truthful inputs, sound governance, operational controls, and independent scrutiny where warranted.
 
+## Licensing
+
+The AI Trust Receipt uses a scope-based dual-license model:
+
+- Executable and machine-readable implementation materials, including source code, schemas, conformance profiles, fixtures, tests, and tools, are licensed under the [Apache License 2.0](LICENSE-APACHE-2.0.txt).
+- Human-readable specification, workbook, documentation, diagrams, narrative reports, and release guidance are licensed under [Creative Commons Attribution 4.0 International](LICENSE-CC-BY-4.0.txt).
+
+See the repository [licensing notice](LICENSE) for the controlling scope, attribution format, packaged-distribution treatment, and endorsement boundary. These licenses enable evaluation and implementation; they do not represent certification, regulatory approval, adoption as a standard, or endorsement of a particular deployment.
+
 ## About the author
 
 Brittany Wright is the founder of Emotional Infrastructure™, a governance framework for AI-mediated trust environments. Her work focuses on disclosure, consent, auditability, human review, contestability, and longitudinal accountability in AI-assisted communication systems.
