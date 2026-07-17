@@ -1,0 +1,86 @@
+name: Validate candidate implementation
+
+on:
+  push:
+    branches:
+      - main
+      - "agent/**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-conformance:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install reference implementation
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Parse machine-readable contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          paths = sorted(
+              list(Path("schemas").glob("*.json"))
+              + list(Path("profiles").glob("*.json"))
+              + list(Path("fixtures").glob("*.json"))
+          )
+          if not paths:
+              raise SystemExit("No JSON contracts or fixtures were found")
+          for path in paths:
+              with path.open(encoding="utf-8") as handle:
+                  json.load(handle)
+              print(f"valid JSON: {path}")
+          PY
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Run conformance vectors
+        run: |
+          python -m trust_receipt conformance run \
+            --cases fixtures/conformance-cases.json \
+            --profile profiles/conformance-profile.v0.1.json \
+            --output "${RUNNER_TEMP}/conformance-report.json"
+
+      - name: Verify example receipt
+        run: |
+          python -m trust_receipt receipt verify \
+            --receipt evidence/example-receipt.json
+
+      - name: Reproduce release verification
+        run: python tools/verify_release.py
+
+      - name: Upload reproduced verification evidence
+        if: always() && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-verification-python-${{ matrix.python-version }}
+          path: evidence/release-verification.json
+          if-no-files-found: error
+          retention-days: 14
