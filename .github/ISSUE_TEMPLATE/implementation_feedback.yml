@@ -1,0 +1,80 @@
+name: Implementation or evaluation feedback
+
+description: Share evidence from implementing, reviewing, teaching, or evaluating the candidate package.
+
+title: "[Feedback]: "
+
+labels:
+  - feedback
+
+body:
+  - type: dropdown
+    id: activity
+    attributes:
+      label: Activity type
+      options:
+        - Independent reproduction
+        - Reference implementation use
+        - Schema integration
+        - Conformance assessment
+        - Governance review
+        - Security or privacy review
+        - Usability or accessibility evaluation
+        - Research or teaching use
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit reviewed
+      placeholder: v0.1.0 or commit SHA
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Evaluation context
+      description: Describe the system, synthetic case, reviewer group, or implementation setting without exposing confidential data.
+    validations:
+      required: true
+
+  - type: textarea
+    id: method
+    attributes:
+      label: Method
+      description: Explain what you attempted, which artifacts you used, and how results were assessed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: findings
+    attributes:
+      label: Findings
+      description: Report successes, failures, ambiguities, disagreements, implementation burden, or unexpected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproducible evidence
+      description: Provide synthetic cases, commands, logs, result summaries, or links that allow the finding to be evaluated.
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended change or next test
+      description: Identify the smallest useful correction, experiment, or clarification.
+
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Confirmations
+      options:
+        - label: I have excluded confidential, personal, credential, and private-key data.
+          required: true
+        - label: I distinguish candidate conformance results from certification, legal compliance, external audit, and regulatory approval.
+          required: true

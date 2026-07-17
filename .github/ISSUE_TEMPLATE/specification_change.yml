@@ -1,0 +1,98 @@
+name: Specification change proposal
+
+description: Propose a normative, schema, conformance, lifecycle, security, privacy, or interoperability change.
+
+title: "[Proposal]: "
+
+labels:
+  - proposal
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Substantial changes should begin with a problem statement and evidence. A proposal does not imply adoption, certification, legal sufficiency, or regulatory approval.
+
+  - type: input
+    id: affected-version
+    attributes:
+      label: Affected version
+      placeholder: v0.1.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: Describe the observable governance, implementation, security, privacy, usability, or interoperability problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-artifacts
+    attributes:
+      label: Affected requirements and artifacts
+      description: Identify specification sections, R1–R12 requirements, schemas, profiles, runtime rules, tests, fixtures, examples, or documentation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: State the proposed behavior or language precisely enough to evaluate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: Link or describe implementation findings, test failures, research, security analysis, user evaluation, or interoperability requirements.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Identify reasonable alternatives and why they are insufficient or less suitable.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compatibility
+    attributes:
+      label: Compatibility assessment
+      options:
+        - Backward compatible
+        - Requires migration
+        - Intentionally incompatible
+        - Unknown and requires analysis
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk-analysis
+    attributes:
+      label: Security, privacy, human-review, and remedy implications
+      description: Address applicable consequences, including affected-party visibility and failure containment.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-strategy
+    attributes:
+      label: Test and conformance strategy
+      description: Explain how the proposal can be evaluated and which positive or negative vectors should change.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Claim boundary
+      options:
+        - label: The proposal is framed as a candidate project change, not proof of adoption, certification, legal compliance, or regulatory approval.
+          required: true
