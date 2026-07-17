@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: mailto:brittanywright@emotionalinfrastructure.org?subject=%5BSECURITY%5D%20AI%20Trust%20Receipt%20vulnerability%20report
+    about: Report receipt forgery, authorization bypass, privacy exposure, integrity bypass, unsafe execution, or other security-sensitive findings privately.
+  - name: Project website
+    url: https://emotionalinfrastructure.org
+    about: Read the broader Emotional Infrastructure governance context.
