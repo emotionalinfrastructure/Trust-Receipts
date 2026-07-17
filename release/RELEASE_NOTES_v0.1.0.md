@@ -37,6 +37,10 @@ This release uses a scope-based dual-license model. Executable and machine-reada
 
 This package proposes an implementation model. It is not an adopted standard, certification program, legal-compliance determination, external audit, or regulatory approval. The included digest demonstrates artifact integrity; it does not authenticate the issuer or establish that the recorded action was fair, lawful, safe, or correct.
 
+## Licensing
+
+Executable and machine-readable implementation materials are licensed under Apache License 2.0. Human-readable specification, workbook, documentation, diagrams, narrative reports, and release guidance are licensed under Creative Commons Attribution 4.0 International. See `LICENSE`, `LICENSE-APACHE-2.0.txt`, `LICENSE-CC-BY-4.0.txt`, and `NOTICE` for the controlling scope and attribution terms.
+
 ## Citation
 
 Wright, B. (2026). *AI Trust Receipt: Candidate governance specification and reference implementation* (Version 0.1.0). Emotional Infrastructure™.
