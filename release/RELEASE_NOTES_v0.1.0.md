@@ -29,6 +29,10 @@ The package operationalizes five linked controls: a pre-execution authority and 
 SHA-256: e29b0f453dc330f3030f706883939291a56d0b0f2d6005613052e86004c222b3
 ```
 
+## Licensing
+
+This release uses a scope-based dual-license model. Executable and machine-readable implementation materials are licensed under Apache License 2.0. Human-readable specification, workbook, documentation, diagrams, and narrative reports are licensed under Creative Commons Attribution 4.0 International. See the root `LICENSE` notice for the controlling scope and attribution requirements.
+
 ## Candidate-status boundary
 
 This package proposes an implementation model. It is not an adopted standard, certification program, legal-compliance determination, external audit, or regulatory approval. The included digest demonstrates artifact integrity; it does not authenticate the issuer or establish that the recorded action was fair, lawful, safe, or correct.
