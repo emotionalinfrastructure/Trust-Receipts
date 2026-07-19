@@ -1,27 +1,42 @@
 {
-  "release_id": "ai-trust-receipt-complete-release-v0.1",
-  "status": "candidate",
-  "generated_at": "2026-07-15T23:41:47Z",
-  "payload_artifact_count": 19,
+  "release_id": "ai-trust-receipt-complete-release-v0.1.1",
+  "status": "candidate-patch",
+  "generated_at": "2026-07-19T00:00:00Z",
+  "payload_artifact_count": 35,
   "verification": {
-    "automated_tests": {
-      "passed": 11,
-      "total": 11
+    "automated_python_tests": {
+      "passed": true,
+      "passed_count": 23,
+      "total": 23,
+      "return_code": 0,
+      "output": "test_all_conformance_vectors_match (test_harness.TrustReceiptHarnessTests.test_all_conformance_vectors_match) ... ok\ntest_approved_review_requires_declared_evidence (test_harness.TrustReceiptHarnessTests.test_approved_review_requires_declared_evidence) ... ok\ntest_canonicalization_rejects_cross_runtime_unsafe_values (test_harness.TrustReceiptHarnessTests.test_canonicalization_rejects_cross_runtime_unsafe_values) ... ok\ntest_cli_generates_and_verifies_receipt (test_harness.TrustReceiptHarnessTests.test_cli_generates_and_verifies_receipt) ... ok\ntest_denied_receipt_records_no_state_change (test_harness.TrustReceiptHarnessTests.test_denied_receipt_records_no_state_change) ... ok\ntest_expiration_boundary_fails_closed (test_harness.TrustReceiptHarnessTests.test_expiration_boundary_fails_closed) ... ok\ntest_negative_schema_cases_are_rejected (test_harness.TrustReceiptHarnessTests.test_negative_schema_cases_are_rejected) ... ok\ntest_out_of_scope_target_fails_closed (test_harness.TrustReceiptHarnessTests.test_out_of_scope_target_fails_closed) ... ok\ntest_public_base_uri_must_be_safe_https (test_harness.TrustReceiptHarnessTests.test_public_base_uri_must_be_safe_https) ... ok\ntest_receipt_id_is_stable_and_binds_complete_inputs (test_harness.TrustReceiptHarnessTests.test_receipt_id_is_stable_and_binds_complete_inputs) ... ok\ntest_receipt_is_schema_valid_and_human_projection_matches (test_harness.TrustReceiptHarnessTests.test_receipt_is_schema_valid_and_human_projection_matches) ... ok\ntest_reference_inputs_match_schemas (test_harness.TrustReceiptHarnessTests.test_reference_inputs_match_schemas) ... ok\ntest_request_projects_third_party_and_reversibility_semantics (test_harness.TrustReceiptHarnessTests.test_request_projects_third_party_and_reversibility_semantics) ... ok\ntest_required_confirmation_fails_closed (test_harness.TrustReceiptHarnessTests.test_required_confirmation_fails_closed) ... ok\ntest_required_human_review_fails_closed (test_harness.TrustReceiptHarnessTests.test_required_human_review_fails_closed) ... ok\ntest_stale_required_evidence_fails_closed (test_harness.TrustReceiptHarnessTests.test_stale_required_evidence_fails_closed) ... ok\ntest_tampering_invalidates_digest (test_harness.TrustReceiptHarnessTests.test_tampering_invalidates_digest) ... ok\ntest_unavailable_receipt_service_fails_closed (test_harness.TrustReceiptHarnessTests.test_unavailable_receipt_service_fails_closed) ... ok\ntest_unavailable_remedy_blocks_c2 (test_harness.TrustReceiptHarnessTests.test_unavailable_remedy_blocks_c2) ... ok\ntest_undefined_signature_placeholder_is_rejected (test_harness.TrustReceiptHarnessTests.test_undefined_signature_placeholder_is_rejected) ... ok\ntest_unpermitted_delegation_fails_closed (test_harness.TrustReceiptHarnessTests.test_unpermitted_delegation_fails_closed) ... ok\ntest_valid_pre_execution_gate_allows (test_harness.TrustReceiptHarnessTests.test_valid_pre_execution_gate_allows) ... ok\ntest_verification_status_is_integrity_protected (test_harness.TrustReceiptHarnessTests.test_verification_status_is_integrity_protected) ... ok\nRan 23 tests\nOK"
+    },
+    "browser_parity": {
+      "passed": true,
+      "return_code": 0,
+      "summary": {
+        "profile": "ei-canonical-json-no-floats-v0.1",
+        "passed": 2,
+        "total": 2
+      },
+      "output": "{\n  \"profile\": \"ei-canonical-json-no-floats-v0.1\",\n  \"passed\": 2,\n  \"total\": 2\n}"
     },
     "conformance_vectors": {
+      "total": 9,
       "passed": 9,
-      "total": 9
+      "failed": 0
     },
     "example_receipt_integrity_verified": true,
     "wheel_installation_verified": true,
-    "source_archive_extraction_verified": true
+    "source_archive_extraction_verified": true,
+    "technical_spec_pdf_render_checked": true
   },
-  "claim_boundary": "Candidate reference package; not certification, external audit, or regulator approval.",
+  "claim_boundary": "Bundled candidate reference checks; not certification, external audit, issuer authentication, or regulator approval.",
   "artifacts": [
     {
       "path": "00_READ_ME_FIRST.md",
-      "size_bytes": 2180,
-      "sha256": "a483499bd86b2cafffbf5f11db5e86292a23b8dc008c611a0ccad8d20d3a444d"
+      "size_bytes": 3631,
+      "sha256": "3d843f861680ac0666ff6eeb87836ad89a83b53fe18ecec70b85e9c8085a6c7a"
     },
     {
       "path": "01_Workbook/AI_Trust_Receipt_Workbook_Candidate_v0.1_REVISED.pdf",
@@ -34,24 +49,39 @@
       "sha256": "c52db5fdafdc38f5ba7ca0700d25c5fb458b5520e3020a4dc945fe08c18b02a9"
     },
     {
-      "path": "02_Technical_Specification/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf",
-      "size_bytes": 95086,
-      "sha256": "b9271b90fa5793b340f2a32f013868598243cb501f7c696b5c5762bd400a477d"
+      "path": "02_Technical_Specification/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.1.pdf",
+      "size_bytes": 112474,
+      "sha256": "7e96dda19baeb3ded4c73ff2364fee6f7be899f08c43bef80c050de43fa5a264"
     },
     {
-      "path": "02_Technical_Specification/Trust_Receipt_Technical_Specification_v0.1.md",
-      "size_bytes": 31631,
-      "sha256": "5ff11461d5ccdeb7c10ecb04b3d11dc0f0f32c52d273579e48ee0469ae6937fe"
+      "path": "02_Technical_Specification/Trust_Receipt_Technical_Specification_v0.1.1.md",
+      "size_bytes": 35000,
+      "sha256": "73e0d220cdad0052fd5232086aa5fe86cd210fb3b5e05537d7cbeea6e199ca45"
     },
     {
-      "path": "03_Reference_Implementation/trust-receipt-reference-v0.1.zip",
-      "size_bytes": 160601,
-      "sha256": "301603d75c3a2ef8760ce071a38761a1b381445f267dca0d5651c724340a86b1"
+      "path": "03_Reference_Implementation/trust-receipt-reference-v0.1.1.zip",
+      "size_bytes": 222858,
+      "sha256": "5e31b1a3e46363a1790d4d1b741883e45cca904a6d76812a78935d33a12352ef"
     },
     {
-      "path": "03_Reference_Implementation/trust_receipt_reference-0.1.0-py3-none-any.whl",
-      "size_bytes": 22826,
-      "sha256": "7bd1712442908392ffce3804261eca40d721878c98df5c4d473626ed0d4f2604"
+      "path": "03_Reference_Implementation/trust_receipt_reference-0.1.1-py3-none-any.whl",
+      "size_bytes": 39582,
+      "sha256": "a804011874b8ab2b9c7e10dbc19832d398b5576254fa2eb41ed36875daa2e7d0"
+    },
+    {
+      "path": "04_Machine_Readable/browser/README.md",
+      "size_bytes": 1240,
+      "sha256": "a08b54a0d1261400f0a6fe572d56c7e4061d363a3b692ccac3a0e62755a225a6"
+    },
+    {
+      "path": "04_Machine_Readable/browser/browser-digest-vectors.json",
+      "size_bytes": 877,
+      "sha256": "52196ffad9057f22fcfb004b9cb33643d9999728ad5c0cdf18a7f12295ad88f4"
+    },
+    {
+      "path": "04_Machine_Readable/browser/integrity.mjs",
+      "size_bytes": 4334,
+      "sha256": "5acfbd38694f64fe45f741eac9c6fb33267d646e123edf36ef1db09a85909445"
     },
     {
       "path": "04_Machine_Readable/reference-conformance-profile.v0.1.json",
@@ -60,8 +90,8 @@
     },
     {
       "path": "04_Machine_Readable/schemas/action-request.schema.json",
-      "size_bytes": 3554,
-      "sha256": "e92453eefde878e0568d3ae4a17ce9170579f3221d76b9c05daf4336441c7644"
+      "size_bytes": 3863,
+      "sha256": "6b071d4bece85e282668bef6d8b844d3795bda47cacebbd7c4ba3dff333acf2b"
     },
     {
       "path": "04_Machine_Readable/schemas/authority-grant.schema.json",
@@ -80,18 +110,13 @@
     },
     {
       "path": "04_Machine_Readable/schemas/trust-receipt.schema.json",
-      "size_bytes": 8982,
-      "sha256": "2581063ef10ab11e93e6c23255ea3c820e5e9a254c2bad7d35a9fcbc8229bcb8"
-    },
-    {
-      "path": "04_Machine_Readable/workbook-conformance-decision-profile.v0.1.json",
-      "size_bytes": 9661,
-      "sha256": "e60a682003bc69495b5e50a4bd0be1afa879186d1eb518d2568b8f30d889fa84"
+      "size_bytes": 8894,
+      "sha256": "c99164321511936dfdf805df81a817e16f317b284609e5016322e0028516e43e"
     },
     {
       "path": "05_Verification_Evidence/conformance-report.json",
       "size_bytes": 4422,
-      "sha256": "db154ea80eb1831d6fbdbf5498bea33192334d22696925812ac0505514838673"
+      "sha256": "e59e010d82fb1c7d6b3cbae2aaffb246d6530d8b0ff760b892988f3315f94c42"
     },
     {
       "path": "05_Verification_Evidence/conformance-report.md",
@@ -100,18 +125,88 @@
     },
     {
       "path": "05_Verification_Evidence/example-receipt.json",
-      "size_bytes": 4283,
-      "sha256": "4492d5c7d3a1a0605498592fb0d25e0c06125b7136616ac080a8b5d0f77b9bb1"
+      "size_bytes": 4400,
+      "sha256": "c50590ada4529bb9045af0c1b757a37118a278ff071394b116063c3ddcd3832b"
     },
     {
       "path": "05_Verification_Evidence/example-receipt.txt",
-      "size_bytes": 1329,
-      "sha256": "6792e36823df3fe403c62c230bcb36a18a6c42507c1b6cb32233565f043c7fb8"
+      "size_bytes": 1513,
+      "sha256": "31ad9a8adfc4d0d505a2ba4b6e9b53f684ba87d8d8eff74a39c7f90327b79b23"
     },
     {
       "path": "05_Verification_Evidence/release-verification.json",
-      "size_bytes": 4109,
-      "sha256": "65e5ba21410fe2600c25f47459c8a77ff1206912618357c968278f8ab6b231fa"
+      "size_bytes": 6537,
+      "sha256": "7840cb6e7187a0c30c500f5b49fa67d595ddff8336b8365012a4e27108360dcf"
+    },
+    {
+      "path": "06_Release_Governance/CHANGELOG.md",
+      "size_bytes": 4967,
+      "sha256": "068219106f4fea110698b6dce2dc21d11c7d57748f14e5238256b8bf847581de"
+    },
+    {
+      "path": "06_Release_Governance/CITATION.cff",
+      "size_bytes": 556,
+      "sha256": "b51fd0a3a8894fb7d6ac97692e4e2f6cead2a8c06506ec10074cf4817e913081"
+    },
+    {
+      "path": "06_Release_Governance/CODE_OF_CONDUCT.md",
+      "size_bytes": 3314,
+      "sha256": "36501994592ebf60039cfde5bc3488407f0057c3bcf4ca1904483b417d08fe0a"
+    },
+    {
+      "path": "06_Release_Governance/CONTRIBUTING.md",
+      "size_bytes": 4481,
+      "sha256": "15201fa17d0f57536e02da43f2426e5af65d01e732eb58582e9f13c5e7f9cd71"
+    },
+    {
+      "path": "06_Release_Governance/GOVERNANCE.md",
+      "size_bytes": 6500,
+      "sha256": "684eb4d65977d1170ccb68747d9e34ba068f75d7a713cac7521ec49be9fb9193"
+    },
+    {
+      "path": "06_Release_Governance/LICENSE-APACHE-2.0.txt",
+      "size_bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "06_Release_Governance/LICENSE-CC-BY-4.0.txt",
+      "size_bytes": 18657,
+      "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+    },
+    {
+      "path": "06_Release_Governance/LICENSE.md",
+      "size_bytes": 2786,
+      "sha256": "dcbcf52153c5c766a8bb48056628747e3a12c9966c68ed594dd6633c5537c3d0"
+    },
+    {
+      "path": "06_Release_Governance/NOTICE",
+      "size_bytes": 318,
+      "sha256": "c9a329a901d08b9f72b5d99971a7297ce0dda9e9ecb8ad103a55f04ec1014307"
+    },
+    {
+      "path": "06_Release_Governance/PUBLIC_CLAIMS.md",
+      "size_bytes": 3714,
+      "sha256": "7eda127c3d5a4abe9f826f6ad4c1521a8c4bcacf553501d4ed6cf362803240cf"
+    },
+    {
+      "path": "06_Release_Governance/RELEASE_NOTES_v0.1.1.md",
+      "size_bytes": 4058,
+      "sha256": "bbdd0ac2bec8b24102eff935b5399f17f14496fd74c949cb253352a6cc3120c7"
+    },
+    {
+      "path": "06_Release_Governance/ROADMAP.md",
+      "size_bytes": 7294,
+      "sha256": "4f75f4491c090c40ee2c3c79b2452e6c48bfdbfee0e50a77d7f69ffd065600b7"
+    },
+    {
+      "path": "06_Release_Governance/SECURITY.md",
+      "size_bytes": 3944,
+      "sha256": "d62e39b2f9e4e3442f9b56730d175055ade8ca69909d1da58d8b967d206bed31"
+    },
+    {
+      "path": "06_Release_Governance/THREAT_MODEL_v0.1.md",
+      "size_bytes": 3402,
+      "sha256": "7f9a80dba21eb85506f43e0eefef0803e73456cff06baeb6327e51c7b35d1a57"
     }
   ]
 }

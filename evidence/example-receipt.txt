@@ -1,6 +1,6 @@
 AI TRUST RECEIPT
 ================
-Receipt: urn:trust-receipt:request:preference-update:001:executed
+Receipt: urn:trust-receipt:request:preference-update:001:a4936c649106aee1c7c03c37e6688a45ddaa5e6732e8dfa81b9fc784d6b54798
 Event time: 2026-07-15T14:30:00Z
 Created: 2026-07-15T14:30:01Z
 
@@ -22,7 +22,11 @@ CONSEQUENCE AND REVIEW
 Class: C2
 Affected party: true
 Notice required: true
+Protected third-party information: false
 Human review: approved
+Evidence viewed:
+  - evidence:confirmation:001
+  - evidence:review:001
 
 MATERIAL EVIDENCE
   - evidence:confirmation:001: available / current (required)
@@ -36,14 +40,15 @@ RELATED RECEIPTS
 
 REMEDY
 Available: true
+Reversible: true
 Contestable: true
 Review owner: Example Service Organization
-Status: https://example.invalid/trust-receipts/request:preference-update:001/remedy
+Status: https://issuer.example/trust-receipts/request:preference-update:001/remedy
 
 INTEGRITY
 Method: sha-256-digest-demo
 Profile: ei-canonical-json-no-floats-v0.1
-Digest: sha256:1cc2ed164cb8f4b6a677b88160e17ceee6a70125347cb4f27e23a69cc5bbc22c
+Digest: sha256:d7c7bb911611b8c16074187403d3d214f20214c9cd744369a6a219c2916e3106
 Recorded verification status: unverified
 
 This receipt is an event record, not a claim that the action was fair, lawful, or correct.

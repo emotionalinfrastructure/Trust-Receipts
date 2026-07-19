@@ -11,10 +11,14 @@ def render_receipt(receipt: dict[str, Any]) -> str:
     consequence = receipt["consequence"]
     remedy = receipt["remedy"]
     integrity = receipt["integrity"]
+    review = receipt["human_review"]
     evidence_lines = [
         f"  - {item['evidence_id']}: {item['status']} / {item['freshness']} ({item['materiality']})"
         for item in receipt["material_inputs"]
     ]
+    evidence_viewed_lines = [
+        f"  - {evidence_id}" for evidence_id in review.get("evidence_viewed", [])
+    ] or ["  - None recorded"]
     delegation_lines = [
         f"  - {item['recipient_id']} at depth {item['depth']}: {item['task']}"
         for item in receipt["delegation"]
@@ -49,7 +53,10 @@ def render_receipt(receipt: dict[str, Any]) -> str:
             f"Class: {consequence['class']}",
             f"Affected party: {str(consequence['affected_party']).lower()}",
             f"Notice required: {str(consequence['notice_required']).lower()}",
-            f"Human review: {receipt['human_review']['status']}",
+            f"Protected third-party information: {str(consequence.get('protected_third_party_information', False)).lower()}",
+            f"Human review: {review['status']}",
+            "Evidence viewed:",
+            *evidence_viewed_lines,
             "",
             "MATERIAL EVIDENCE",
             *evidence_lines,
@@ -62,6 +69,7 @@ def render_receipt(receipt: dict[str, Any]) -> str:
             "",
             "REMEDY",
             f"Available: {str(remedy['available']).lower()}",
+            f"Reversible: {str(remedy['reversible']).lower()}",
             f"Contestable: {str(remedy['contestable']).lower()}",
             f"Review owner: {remedy['review_owner']}",
             f"Status: {remedy['status_uri']}",

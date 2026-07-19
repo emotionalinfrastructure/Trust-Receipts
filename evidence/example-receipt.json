@@ -1,13 +1,13 @@
 {
-  "receipt_version": "0.1",
-  "receipt_id": "urn:trust-receipt:request:preference-update:001:executed",
+  "receipt_version": "0.1.1",
+  "receipt_id": "urn:trust-receipt:request:preference-update:001:a4936c649106aee1c7c03c37e6688a45ddaa5e6732e8dfa81b9fc784d6b54798",
   "event_time": "2026-07-15T14:30:00Z",
   "created_at": "2026-07-15T14:30:01Z",
-  "schema_id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.schema.json",
+  "schema_id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.1.schema.json",
   "issuer": {
     "organization_id": "org:reference-implementation",
     "display_name": "AI Trust Receipt Reference Implementation",
-    "verification_uri": "https://example.invalid/trust-receipts/verify"
+    "verification_uri": "https://trust-receipt.example/verify"
   },
   "agent": {
     "agent_id": "agent:profile-maintainer",
@@ -78,7 +78,10 @@
     "authority_to_intervene": true,
     "reviewer_role": "account-change-reviewer",
     "reviewed_at": "2026-07-15T14:29:00Z",
-    "evidence_viewed": [],
+    "evidence_viewed": [
+      "evidence:confirmation:001",
+      "evidence:review:001"
+    ],
     "disposition": "approved"
   },
   "consequence": {
@@ -94,7 +97,7 @@
     "contestable": true,
     "restoration_steps": "Restore the recorded before_state after accountable review.",
     "review_owner": "Example Service Organization",
-    "status_uri": "https://example.invalid/trust-receipts/request:preference-update:001/remedy",
+    "status_uri": "https://issuer.example/trust-receipts/request:preference-update:001/remedy",
     "time_limit": "Submit within 30 calendar days of notice."
   },
   "privacy": {
@@ -109,12 +112,12 @@
       "unrelated-profiling"
     ],
     "chain_of_thought_excluded": true,
-    "deletion_uri": "https://example.invalid/trust-receipts/request:preference-update:001/privacy"
+    "deletion_uri": "https://issuer.example/trust-receipts/request:preference-update:001/privacy"
   },
   "relationships": [],
   "integrity": {
     "method": "sha-256-digest-demo",
-    "digest": "sha256:1cc2ed164cb8f4b6a677b88160e17ceee6a70125347cb4f27e23a69cc5bbc22c",
+    "digest": "sha256:d7c7bb911611b8c16074187403d3d214f20214c9cd744369a6a219c2916e3106",
     "canonicalization_profile": "ei-canonical-json-no-floats-v0.1",
     "verification_status": "unverified"
   }

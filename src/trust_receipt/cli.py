@@ -76,7 +76,13 @@ def cmd_gate(args: argparse.Namespace) -> int:
 def cmd_receipt_create(args: argparse.Namespace) -> int:
     request, grant, evidence = load_json(args.request), load_json(args.grant), load_json(args.evidence)
     _validate_inputs(request, grant, evidence)
-    receipt, decision = create_receipt(request, grant, evidence, created_at=args.created_at)
+    receipt, decision = create_receipt(
+        request,
+        grant,
+        evidence,
+        created_at=args.created_at,
+        base_uri=args.base_uri,
+    )
     require_valid(receipt, _schema("trust-receipt.schema.json"))
     _write_json(args.output, receipt)
     if args.human_output:
@@ -203,7 +209,13 @@ def _render_conformance_report(report: dict[str, Any]) -> str:
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    moment = (
+        datetime.fromtimestamp(int(epoch), tz=timezone.utc)
+        if epoch is not None
+        else datetime.now(timezone.utc)
+    )
+    return moment.isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -224,6 +236,7 @@ def build_parser() -> argparse.ArgumentParser:
     create.add_argument("--output", required=True)
     create.add_argument("--human-output")
     create.add_argument("--created-at", help="Deterministic RFC 3339 creation time")
+    create.add_argument("--base-uri", help="Public HTTPS base URI for remedy and privacy links")
     create.set_defaults(handler=cmd_receipt_create)
     verify = receipt_sub.add_parser("verify")
     verify.add_argument("--receipt", required=True)

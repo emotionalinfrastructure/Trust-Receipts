@@ -1,18 +1,20 @@
 # AI Trust Receipt
 
 [![Validate candidate implementation](https://github.com/emotionalinfrastructure/Trust-Receipts/actions/workflows/validate.yml/badge.svg)](https://github.com/emotionalinfrastructure/Trust-Receipts/actions/workflows/validate.yml)
-[![Candidate version](https://img.shields.io/badge/candidate-v0.1.0-1c2b3a)](release/RELEASE_NOTES_v0.1.0.md)
+[![Candidate version](https://img.shields.io/badge/candidate-v0.1.1-1c2b3a)](release/RELEASE_NOTES_v0.1.1.md)
 [![Code and schemas: Apache-2.0](https://img.shields.io/badge/code%20%26%20schemas-Apache--2.0-5b6770)](LICENSE-APACHE-2.0.txt)
 [![Documentation: CC BY 4.0](https://img.shields.io/badge/documentation-CC%20BY%204.0-5b6770)](LICENSE-CC-BY-4.0.txt)
 
-**Candidate release v0.1.0 · July 15, 2026**  
+**Candidate release v0.1.1 · July 19, 2026**
 **Brittany Wright · Founder, Emotional Infrastructure™**
 
 The **AI Trust Receipt** is a candidate governance specification and reference implementation for producing durable, user-legible, machine-verifiable records of consequential AI actions.
 
 It addresses a specific accountability gap: an AI-mediated system may change access, modify data, communicate externally, delegate authority, or affect another party while leaving the affected person with no coherent record of what occurred, under whose authority, using which evidence, with what result, and through what remedy pathway.
 
-**[Download the complete candidate v0.1.0 release](release/AI_Trust_Receipt_Complete_Release_v0.1.0.zip)**
+**[Download the complete candidate v0.1.1 release](release/AI_Trust_Receipt_Complete_Release_v0.1.1.zip)**
+
+Release v0.1.1 includes versioned receipt and action-request schema corrections. Unchanged authority, evidence, assessment, and conformance-profile contracts retain their v0.1 identifiers; see the [changelog](CHANGELOG.md) for the exact boundary.
 
 ## Project status
 
@@ -37,6 +39,7 @@ A conforming receipt records what an accountable system represents as having occ
 - Human-readable and machine-readable example receipts
 - Release manifests and SHA-256 integrity records
 - A reproducible verification script
+- A browser digest module with fixed Python/JavaScript parity vectors
 - Repository governance, security, contribution, and change-control materials
 
 ## Core system model
@@ -72,12 +75,13 @@ request + authority + evidence
 
 | Path | Contents |
 | --- | --- |
-| [`docs/Trust_Receipt_Technical_Specification_v0.1.md`](docs/Trust_Receipt_Technical_Specification_v0.1.md) | Normative candidate technical specification |
+| [`docs/Trust_Receipt_Technical_Specification_v0.1.1.md`](docs/Trust_Receipt_Technical_Specification_v0.1.1.md) | Normative candidate technical specification |
 | [`schemas/`](schemas/) | JSON Schema Draft 2020-12 contracts |
 | [`profiles/`](profiles/) | Machine-readable conformance profile |
 | [`fixtures/`](fixtures/) | Positive and negative conformance cases |
 | [`src/trust_receipt/`](src/trust_receipt/) | Reference implementation and CLI |
 | [`tests/`](tests/) | Automated unit tests |
+| [`browser/`](browser/) | Browser digest implementation and parity boundary |
 | [`evidence/`](evidence/) | Example receipt and verification evidence |
 | [`tools/verify_release.py`](tools/verify_release.py) | Reproducible release-verification script |
 | [`release/`](release/) | Complete release archive, release notes, and integrity materials |
@@ -125,7 +129,13 @@ python -m trust_receipt receipt verify \
   --receipt evidence/example-receipt.json
 ```
 
-### 5. Reproduce the release verification
+### 5. Verify browser/Python digest parity
+
+```bash
+node tools/verify_browser_parity.mjs
+```
+
+### 6. Reproduce the release verification
 
 ```bash
 python tools/verify_release.py
@@ -135,11 +145,12 @@ The verification script parses the bundled JSON contracts, runs the unit tests, 
 
 ## Published verification baseline
 
-The candidate v0.1.0 release records the following baseline:
+The candidate v0.1.1 release records the following baseline:
 
 | Verification measure | Result |
 | --- | ---: |
-| Automated tests | 11/11 passed |
+| Automated Python tests | 23/23 passed |
+| Browser/Python parity vectors | 2/2 passed |
 | Conformance vectors | 9/9 passed |
 | Normative requirements | 12 |
 | JSON Schema contracts | 5 |
@@ -151,15 +162,13 @@ The GitHub Actions workflow re-runs the tests, conformance vectors, receipt veri
 
 ## Integrity
 
-Canonical complete-release ZIP SHA-256:
-
-```text
-e29b0f453dc330f3030f706883939291a56d0b0f2d6005613052e86004c222b3
-```
+The canonical complete-release ZIP digest is published in [`release/SHA256SUMS_REPOSITORY.txt`](release/SHA256SUMS_REPOSITORY.txt), outside the archive it covers.
 
 The complete ZIP contains its own `SHA256SUMS.txt` and `release-manifest.json` for artifact-level verification. Repository-level release verification is available under `release/` and `evidence/`.
 
-The v0.1 package demonstrates deterministic canonicalization and SHA-256 digest verification. A digest can reveal content modification relative to the recorded value. It does not authenticate the issuer, prove key custody, provide revocation, establish truthful inputs, or prove that the recorded action was lawful, fair, safe, or correct.
+The v0.1.1 package demonstrates deterministic canonicalization and SHA-256 digest verification in Python and reproduces the fixed expected digest in a browser-compatible JavaScript implementation for identical bundled fixtures inside the documented restricted domain. This is source-equivalent behavior, not a byte-identical port or a claim of universal cross-runtime parity.
+
+A digest can reveal content modification only relative to a trusted expected digest or trusted receipt channel. It does not authenticate the issuer, prove key custody, provide revocation, establish truthful inputs, or prove that the recorded action was lawful, fair, safe, or correct. See the [public claim guide](docs/PUBLIC_CLAIMS.md) for supported descriptions.
 
 ## Contributing and review
 
@@ -196,7 +205,7 @@ Citation metadata is available in [`CITATION.cff`](CITATION.cff).
 
 Suggested citation:
 
-> Wright, Brittany. *AI Trust Receipt: Candidate Governance Specification and Reference Implementation*. Version 0.1.0. Emotional Infrastructure, 2026.
+> Wright, Brittany. *AI Trust Receipt: Candidate Governance Specification and Reference Implementation*. Version 0.1.1. Emotional Infrastructure, 2026.
 
 ## About the author
 

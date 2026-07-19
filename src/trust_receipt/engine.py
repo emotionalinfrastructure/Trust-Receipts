@@ -83,6 +83,38 @@ def evaluate_gate(
         if threshold == "independent_human_review" and request["human_review"]["status"] != "approved":
             fail("HUMAN_REVIEW_REQUIRED", "Independent human approval is required.", "request.human_review.status")
 
+    review = request["human_review"]
+    if review["status"] == "approved":
+        viewed_ids = set(review.get("evidence_viewed", []))
+        available_ids = {
+            item["evidence_id"]
+            for item in evidence["items"]
+            if item["status"] == "available"
+        }
+        required_ids = {
+            item["evidence_id"]
+            for item in evidence["items"]
+            if item["materiality"] == "required"
+        }
+        if not viewed_ids:
+            fail(
+                "HUMAN_REVIEW_EVIDENCE_MISSING",
+                "An approved human review must identify the evidence viewed.",
+                "request.human_review.evidence_viewed",
+            )
+        if viewed_ids - available_ids:
+            fail(
+                "HUMAN_REVIEW_EVIDENCE_UNKNOWN",
+                "Human review references evidence that is not available in the evidence set.",
+                "request.human_review.evidence_viewed",
+            )
+        if required_ids - viewed_ids:
+            fail(
+                "HUMAN_REVIEW_EVIDENCE_INCOMPLETE",
+                "Human review did not identify every required evidence item as viewed.",
+                "request.human_review.evidence_viewed",
+            )
+
     delegations = request.get("delegation", [])
     policy = grant["delegation"]
     if delegations and not policy["allowed"]:

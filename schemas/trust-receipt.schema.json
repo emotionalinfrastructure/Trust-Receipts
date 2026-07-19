@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.schema.json",
-  "title": "AI Trust Receipt v0.1",
+  "$id": "https://emotionalinfrastructure.org/schemas/trust-receipt/trust-receipt.v0.1.1.schema.json",
+  "title": "AI Trust Receipt v0.1.1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -24,7 +24,7 @@
     "integrity"
   ],
   "properties": {
-    "receipt_version": {"const": "0.1"},
+    "receipt_version": {"const": "0.1.1"},
     "receipt_id": {"type": "string", "pattern": "^urn:trust-receipt:[A-Za-z0-9._:-]{3,200}$"},
     "event_time": {"type": "string", "format": "date-time"},
     "created_at": {"type": "string", "format": "date-time"},
@@ -199,11 +199,10 @@
       "additionalProperties": false,
       "required": ["method", "digest", "canonicalization_profile", "verification_status"],
       "properties": {
-        "method": {"enum": ["sha-256-digest-demo", "digital-signature"]},
+        "method": {"const": "sha-256-digest-demo"},
         "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
         "canonicalization_profile": {"type": "string", "minLength": 1, "maxLength": 160},
-        "verification_status": {"enum": ["unverified", "verified", "failed"]},
-        "key_id": {"type": "string", "minLength": 1, "maxLength": 500}
+        "verification_status": {"enum": ["unverified", "verified", "failed"]}
       }
     }
   }

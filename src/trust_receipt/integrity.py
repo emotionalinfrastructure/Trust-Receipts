@@ -10,21 +10,40 @@ from typing import Any
 
 CANONICALIZATION_PROFILE = "ei-canonical-json-no-floats-v0.1"
 INTEGRITY_METHOD = "sha-256-digest-demo"
+MAX_SAFE_INTEGER = (2**53) - 1
 
 
-def _reject_floats(value: Any, path: str = "$") -> None:
+def _reject_unsupported_values(value: Any, path: str = "$") -> None:
+    if value is None or type(value) is bool:
+        return
     if isinstance(value, float):
         raise ValueError(f"Floating-point value is not permitted at {path}")
+    if type(value) is int:
+        if abs(value) > MAX_SAFE_INTEGER:
+            raise ValueError(f"Integer outside the cross-runtime safe range at {path}")
+        return
+    if isinstance(value, str):
+        try:
+            value.encode("utf-8", errors="strict")
+        except UnicodeEncodeError as exc:
+            raise ValueError(f"Unpaired Unicode surrogate is not permitted at {path}") from exc
+        return
     if isinstance(value, dict):
         for key, child in value.items():
-            _reject_floats(child, f"{path}.{key}")
-    elif isinstance(value, list):
+            if not isinstance(key, str):
+                raise ValueError(f"Object key must be a string at {path}")
+            _reject_unsupported_values(key, f"{path}.<key>")
+            _reject_unsupported_values(child, f"{path}.{key}")
+        return
+    if isinstance(value, list):
         for index, child in enumerate(value):
-            _reject_floats(child, f"{path}[{index}]")
+            _reject_unsupported_values(child, f"{path}[{index}]")
+        return
+    raise ValueError(f"Unsupported JSON value at {path}: {type(value).__name__}")
 
 
 def canonical_bytes(value: Any) -> bytes:
-    _reject_floats(value)
+    _reject_unsupported_values(value)
     return json.dumps(
         value,
         ensure_ascii=False,

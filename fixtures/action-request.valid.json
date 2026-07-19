@@ -18,13 +18,15 @@
     "proposed_after_state": {
       "weekly_summary": true
     },
-    "persistent_change": true
+    "persistent_change": true,
+    "reversible": true
   },
   "consequence": {
     "class": "C2",
     "affected_party": true,
     "notice_required": true,
-    "rationale": "The persistent account preference directly affects the account holder."
+    "rationale": "The persistent account preference directly affects the account holder.",
+    "protected_third_party_information": false
   },
   "confirmation": {
     "status": "confirmed",
@@ -35,7 +37,11 @@
     "status": "approved",
     "reviewer_role": "account-change-reviewer",
     "review_id": "review:001",
-    "reviewed_at": "2026-07-15T14:29:00Z"
+    "reviewed_at": "2026-07-15T14:29:00Z",
+    "evidence_viewed": [
+      "evidence:confirmation:001",
+      "evidence:review:001"
+    ]
   },
   "delegation": [
     {
