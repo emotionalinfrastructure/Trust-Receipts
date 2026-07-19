@@ -87,7 +87,7 @@
   },
   "example_receipt_integrity_verified": true,
   "artifact_digests": {
-    "CHANGELOG.md": "sha256:068219106f4fea110698b6dce2dc21d11c7d57748f14e5238256b8bf847581de",
+    "CHANGELOG.md": "sha256:b40f1cc4a2b0e81470083689394fd387f0e46ee2d81f90eab440039ef6d0403b",
     "README.md": "sha256:a440f2cce3c6b1bdde3e170f4efe4f6e69205174943aea04a7ab6677c811d67d",
     "SECURITY.md": "sha256:d62e39b2f9e4e3442f9b56730d175055ade8ca69909d1da58d8b967d206bed31",
     "browser/integrity.mjs": "sha256:5acfbd38694f64fe45f741eac9c6fb33267d646e123edf36ef1db09a85909445",

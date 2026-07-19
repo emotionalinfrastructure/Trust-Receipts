@@ -40,6 +40,7 @@ The workbook is the implementation and assessment interface. The technical speci
 - The source archive passed extraction checks.
 - The wheel passed isolated installation and command checks.
 - The technical specification PDF passed text and visual inspection.
+- GitHub prerelease publication is gated on the implementation, conformance, and repository/archive digest checks.
 
 These are bundled release checks, not independent third-party verification.
 

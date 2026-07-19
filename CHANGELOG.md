@@ -19,6 +19,7 @@ No unreleased changes are recorded at publication time.
 - Community conduct expectations.
 - Evidence-driven roadmap for release hardening, v0.2 evaluation, reference tooling, independent review, and archival publication.
 - Continuous integration and repository issue templates.
+- Checked GitHub prerelease publication that verifies the implementation, conformance evidence, and release digests before creating the version tag and attaching the complete archive.
 - Reference threat model and public claim-discipline guide.
 - Dependency-free browser digest module, fixed cross-runtime parity vectors, and a Node.js verification runner.
 - Negative tests for schema failures, expiration boundaries, confirmation, human review, delegation, receipt availability, safe generated links, canonicalization restrictions, and receipt identity stability.

@@ -15,6 +15,7 @@ This patch release hardens the AI Trust Receipt candidate governance specificati
 - Positive and negative conformance vectors
 - Human-readable and machine-readable example receipts
 - Verification evidence, release manifest, and SHA-256 digest ledger
+- Checked GitHub prerelease publication workflow for the version tag and complete archive
 - Governance, security, threat-model, licensing, and public-claim guidance
 
 ## Patch corrections
@@ -35,6 +36,7 @@ This patch release hardens the AI Trust Receipt candidate governance specificati
 - **Example receipt integrity verified**
 - **Source archive extraction verified**
 - **Wheel installation and command-line interface verified**
+- **Repository and complete-archive digest ledgers verified before GitHub publication**
 
 These are bundled release checks, not independent third-party verification.
 
