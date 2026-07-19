@@ -12,6 +12,10 @@ The **AI Trust Receipt** is a candidate governance specification and reference i
 
 It addresses a specific accountability gap: an AI-mediated system may change access, modify data, communicate externally, delegate authority, or affect another party while leaving the affected person with no coherent record of what occurred, under whose authority, using which evidence, with what result, and through what remedy pathway.
 
+**[Try the live browser demo](https://demo.emotionalinfrastructure.org)**
+
+The public demo interface is source-controlled in [`emotionalinfrastructure/site`](https://github.com/emotionalinfrastructure/site), under the `/trust-receipt` route. This repository remains the canonical source for the candidate specification, schemas, conformance materials, and reference implementation. The demo links back to this repository, release, review issue, and normative specification.
+
 **[Download the complete candidate v0.1.1 release](release/AI_Trust_Receipt_Complete_Release_v0.1.1.zip)**
 
 Release v0.1.1 includes versioned receipt and action-request schema corrections. Unchanged authority, evidence, assessment, and conformance-profile contracts retain their v0.1 identifiers; see the [changelog](CHANGELOG.md) for the exact boundary.
