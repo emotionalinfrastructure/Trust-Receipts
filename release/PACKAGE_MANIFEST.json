@@ -35,8 +35,8 @@
   "artifacts": [
     {
       "path": "00_READ_ME_FIRST.md",
-      "size_bytes": 3631,
-      "sha256": "3d843f861680ac0666ff6eeb87836ad89a83b53fe18ecec70b85e9c8085a6c7a"
+      "size_bytes": 3746,
+      "sha256": "43e95d6ee4485b79ba52dddc805c1f62a96604c835d1c136d51f1d3c6ca29daa"
     },
     {
       "path": "01_Workbook/AI_Trust_Receipt_Workbook_Candidate_v0.1_REVISED.pdf",
@@ -60,8 +60,8 @@
     },
     {
       "path": "03_Reference_Implementation/trust-receipt-reference-v0.1.1.zip",
-      "size_bytes": 222858,
-      "sha256": "5e31b1a3e46363a1790d4d1b741883e45cca904a6d76812a78935d33a12352ef"
+      "size_bytes": 224374,
+      "sha256": "415c4cc4d28d3e2e57a80a04222b386020b81cccc81f1341c8e3e38a091030f6"
     },
     {
       "path": "03_Reference_Implementation/trust_receipt_reference-0.1.1-py3-none-any.whl",
@@ -136,12 +136,12 @@
     {
       "path": "05_Verification_Evidence/release-verification.json",
       "size_bytes": 6537,
-      "sha256": "7840cb6e7187a0c30c500f5b49fa67d595ddff8336b8365012a4e27108360dcf"
+      "sha256": "60780b680798e3d35cf4595b5bf1b4129b79ae35fb0a33d2a60934c4663dceb2"
     },
     {
       "path": "06_Release_Governance/CHANGELOG.md",
-      "size_bytes": 4967,
-      "sha256": "068219106f4fea110698b6dce2dc21d11c7d57748f14e5238256b8bf847581de"
+      "size_bytes": 5151,
+      "sha256": "b40f1cc4a2b0e81470083689394fd387f0e46ee2d81f90eab440039ef6d0403b"
     },
     {
       "path": "06_Release_Governance/CITATION.cff",
@@ -190,8 +190,8 @@
     },
     {
       "path": "06_Release_Governance/RELEASE_NOTES_v0.1.1.md",
-      "size_bytes": 4058,
-      "sha256": "bbdd0ac2bec8b24102eff935b5399f17f14496fd74c949cb253352a6cc3120c7"
+      "size_bytes": 4236,
+      "sha256": "3c7b40f562d33952f36078875dbce4707370011ee6a0f9a202f296f8d027e774"
     },
     {
       "path": "06_Release_Governance/ROADMAP.md",
