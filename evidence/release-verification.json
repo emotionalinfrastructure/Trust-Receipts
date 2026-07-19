@@ -1,10 +1,10 @@
 {
-  "manifest_version": "0.1",
-  "candidate_version": "0.1.0",
-  "generated_at": "2026-07-15T23:33:08Z",
+  "manifest_version": "0.1.1",
+  "candidate_version": "0.1.1",
+  "generated_at": "2026-07-19T00:00:00Z",
   "json_parse": {
-    "checked": 10,
-    "passed": 10,
+    "checked": 11,
+    "passed": 11,
     "files": [
       {
         "path": "fixtures/action-request.valid.json",
@@ -13,6 +13,11 @@
       },
       {
         "path": "fixtures/authority-grant.valid.json",
+        "valid": true,
+        "error": null
+      },
+      {
+        "path": "fixtures/browser-digest-vectors.json",
         "valid": true,
         "error": null
       },
@@ -60,8 +65,20 @@
   },
   "unit_tests": {
     "passed": true,
+    "passed_count": 23,
+    "total": 23,
     "return_code": 0,
-    "output": "{\n  \"receipt\": \"/tmp/tmpd7xorlv3/receipt.json\",\n  \"gate\": {\n    \"decision\": \"allow\",\n    \"failures\": []\n  }\n}\n{\n  \"receipt_id\": \"urn:trust-receipt:request:preference-update:001:executed\",\n  \"verified\": true\n}\ntest_all_conformance_vectors_match (test_harness.TrustReceiptHarnessTests.test_all_conformance_vectors_match) ... ok\ntest_cli_generates_and_verifies_receipt (test_harness.TrustReceiptHarnessTests.test_cli_generates_and_verifies_receipt) ... ok\ntest_denied_receipt_records_no_state_change (test_harness.TrustReceiptHarnessTests.test_denied_receipt_records_no_state_change) ... ok\ntest_out_of_scope_target_fails_closed (test_harness.TrustReceiptHarnessTests.test_out_of_scope_target_fails_closed) ... ok\ntest_receipt_is_schema_valid_and_human_projection_matches (test_harness.TrustReceiptHarnessTests.test_receipt_is_schema_valid_and_human_projection_matches) ... ok\ntest_reference_inputs_match_schemas (test_harness.TrustReceiptHarnessTests.test_reference_inputs_match_schemas) ... ok\ntest_stale_required_evidence_fails_closed (test_harness.TrustReceiptHarnessTests.test_stale_required_evidence_fails_closed) ... ok\ntest_tampering_invalidates_digest (test_harness.TrustReceiptHarnessTests.test_tampering_invalidates_digest) ... ok\ntest_unavailable_remedy_blocks_c2 (test_harness.TrustReceiptHarnessTests.test_unavailable_remedy_blocks_c2) ... ok\ntest_valid_pre_execution_gate_allows (test_harness.TrustReceiptHarnessTests.test_valid_pre_execution_gate_allows) ... ok\ntest_verification_status_is_integrity_protected (test_harness.TrustReceiptHarnessTests.test_verification_status_is_integrity_protected) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.007s\n\nOK"
+    "output": "test_all_conformance_vectors_match (test_harness.TrustReceiptHarnessTests.test_all_conformance_vectors_match) ... ok\ntest_approved_review_requires_declared_evidence (test_harness.TrustReceiptHarnessTests.test_approved_review_requires_declared_evidence) ... ok\ntest_canonicalization_rejects_cross_runtime_unsafe_values (test_harness.TrustReceiptHarnessTests.test_canonicalization_rejects_cross_runtime_unsafe_values) ... ok\ntest_cli_generates_and_verifies_receipt (test_harness.TrustReceiptHarnessTests.test_cli_generates_and_verifies_receipt) ... ok\ntest_denied_receipt_records_no_state_change (test_harness.TrustReceiptHarnessTests.test_denied_receipt_records_no_state_change) ... ok\ntest_expiration_boundary_fails_closed (test_harness.TrustReceiptHarnessTests.test_expiration_boundary_fails_closed) ... ok\ntest_negative_schema_cases_are_rejected (test_harness.TrustReceiptHarnessTests.test_negative_schema_cases_are_rejected) ... ok\ntest_out_of_scope_target_fails_closed (test_harness.TrustReceiptHarnessTests.test_out_of_scope_target_fails_closed) ... ok\ntest_public_base_uri_must_be_safe_https (test_harness.TrustReceiptHarnessTests.test_public_base_uri_must_be_safe_https) ... ok\ntest_receipt_id_is_stable_and_binds_complete_inputs (test_harness.TrustReceiptHarnessTests.test_receipt_id_is_stable_and_binds_complete_inputs) ... ok\ntest_receipt_is_schema_valid_and_human_projection_matches (test_harness.TrustReceiptHarnessTests.test_receipt_is_schema_valid_and_human_projection_matches) ... ok\ntest_reference_inputs_match_schemas (test_harness.TrustReceiptHarnessTests.test_reference_inputs_match_schemas) ... ok\ntest_request_projects_third_party_and_reversibility_semantics (test_harness.TrustReceiptHarnessTests.test_request_projects_third_party_and_reversibility_semantics) ... ok\ntest_required_confirmation_fails_closed (test_harness.TrustReceiptHarnessTests.test_required_confirmation_fails_closed) ... ok\ntest_required_human_review_fails_closed (test_harness.TrustReceiptHarnessTests.test_required_human_review_fails_closed) ... ok\ntest_stale_required_evidence_fails_closed (test_harness.TrustReceiptHarnessTests.test_stale_required_evidence_fails_closed) ... ok\ntest_tampering_invalidates_digest (test_harness.TrustReceiptHarnessTests.test_tampering_invalidates_digest) ... ok\ntest_unavailable_receipt_service_fails_closed (test_harness.TrustReceiptHarnessTests.test_unavailable_receipt_service_fails_closed) ... ok\ntest_unavailable_remedy_blocks_c2 (test_harness.TrustReceiptHarnessTests.test_unavailable_remedy_blocks_c2) ... ok\ntest_undefined_signature_placeholder_is_rejected (test_harness.TrustReceiptHarnessTests.test_undefined_signature_placeholder_is_rejected) ... ok\ntest_unpermitted_delegation_fails_closed (test_harness.TrustReceiptHarnessTests.test_unpermitted_delegation_fails_closed) ... ok\ntest_valid_pre_execution_gate_allows (test_harness.TrustReceiptHarnessTests.test_valid_pre_execution_gate_allows) ... ok\ntest_verification_status_is_integrity_protected (test_harness.TrustReceiptHarnessTests.test_verification_status_is_integrity_protected) ... ok\nRan 23 tests\nOK"
+  },
+  "browser_parity": {
+    "passed": true,
+    "return_code": 0,
+    "summary": {
+      "profile": "ei-canonical-json-no-floats-v0.1",
+      "passed": 2,
+      "total": 2
+    },
+    "output": "{\n  \"profile\": \"ei-canonical-json-no-floats-v0.1\",\n  \"passed\": 2,\n  \"total\": 2\n}"
   },
   "conformance_vectors": {
     "total": 9,
@@ -70,11 +87,17 @@
   },
   "example_receipt_integrity_verified": true,
   "artifact_digests": {
-    "docs/Trust_Receipt_Technical_Specification_v0.1.md": "sha256:5ff11461d5ccdeb7c10ecb04b3d11dc0f0f32c52d273579e48ee0469ae6937fe",
-    "dist/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.pdf": "sha256:b9271b90fa5793b340f2a32f013868598243cb501f7c696b5c5762bd400a477d",
-    "dist/trust_receipt_reference-0.1.0-py3-none-any.whl": "sha256:7bd1712442908392ffce3804261eca40d721878c98df5c4d473626ed0d4f2604",
-    "evidence/conformance-report.json": "sha256:db154ea80eb1831d6fbdbf5498bea33192334d22696925812ac0505514838673",
-    "evidence/example-receipt.json": "sha256:4492d5c7d3a1a0605498592fb0d25e0c06125b7136616ac080a8b5d0f77b9bb1"
+    "CHANGELOG.md": "sha256:068219106f4fea110698b6dce2dc21d11c7d57748f14e5238256b8bf847581de",
+    "README.md": "sha256:a440f2cce3c6b1bdde3e170f4efe4f6e69205174943aea04a7ab6677c811d67d",
+    "SECURITY.md": "sha256:d62e39b2f9e4e3442f9b56730d175055ade8ca69909d1da58d8b967d206bed31",
+    "browser/integrity.mjs": "sha256:5acfbd38694f64fe45f741eac9c6fb33267d646e123edf36ef1db09a85909445",
+    "docs/THREAT_MODEL_v0.1.md": "sha256:7f9a80dba21eb85506f43e0eefef0803e73456cff06baeb6327e51c7b35d1a57",
+    "docs/Trust_Receipt_Technical_Specification_v0.1.1.md": "sha256:73e0d220cdad0052fd5232086aa5fe86cd210fb3b5e05537d7cbeea6e199ca45",
+    "docs/AI_Trust_Receipt_Technical_Specification_Candidate_v0.1.1.pdf": "sha256:7e96dda19baeb3ded4c73ff2364fee6f7be899f08c43bef80c050de43fa5a264",
+    "dist/trust_receipt_reference-0.1.1-py3-none-any.whl": "sha256:a804011874b8ab2b9c7e10dbc19832d398b5576254fa2eb41ed36875daa2e7d0",
+    "evidence/conformance-report.json": "sha256:e59e010d82fb1c7d6b3cbae2aaffb246d6530d8b0ff760b892988f3315f94c42",
+    "evidence/example-receipt.json": "sha256:c50590ada4529bb9045af0c1b757a37118a278ff071394b116063c3ddcd3832b",
+    "fixtures/browser-digest-vectors.json": "sha256:52196ffad9057f22fcfb004b9cb33643d9999728ad5c0cdf18a7f12295ad88f4"
   },
   "claim_boundary": "Reference implementation evidence only; not certification or external audit evidence."
 }

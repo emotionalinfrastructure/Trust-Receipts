@@ -2,7 +2,7 @@
 
 ## Current baseline
 
-Candidate release **v0.1.0** establishes the first complete public implementation boundary:
+Candidate release **v0.1.1** establishes the current public implementation boundary:
 
 - a normative candidate technical specification;
 - a pre-execution authority and evidence gate;
@@ -12,6 +12,7 @@ Candidate release **v0.1.0** establishes the first complete public implementatio
 - R1–R12 noncompensatory conformance logic;
 - positive and negative conformance vectors;
 - human-readable and machine-readable example receipts;
+- fixed Python/browser digest-parity vectors within a documented restricted domain;
 - release integrity and verification materials.
 
 The next stage is not to declare adoption. It is to improve reproducibility, implementation clarity, independent evaluation, and evidence quality.
@@ -22,15 +23,15 @@ The next stage is not to declare adoption. It is to improve reproducibility, imp
 
 Planned work:
 
-- continuous integration for unit tests, conformance vectors, receipt verification, and release verification;
-- repository governance, contribution, security, conduct, changelog, and issue-management files;
-- reproducible package-build instructions and artifact verification;
-- clearer navigation between specification, schemas, profiles, evidence, tools, and release materials;
+- maintain continuous integration for unit tests, browser parity, conformance vectors, receipt verification, and release verification;
+- maintain repository governance, contribution, security, conduct, changelog, and issue-management files;
+- maintain reproducible package-build instructions and artifact verification;
+- preserve clear navigation between specification, schemas, profiles, evidence, tools, and release materials;
 - explicit compatibility and deprecation rules;
 - defect correction and security hardening;
 - independent reproduction instructions that do not rely on the author’s environment.
 
-**Completion evidence:** all bundled tests and vectors pass in a clean supported environment; release artifacts can be reproduced or independently verified; repository decisions and contribution boundaries are documented.
+**Completion evidence:** all bundled tests and vectors pass in a clean supported environment; release artifacts can be rebuilt with documented commands or reproduced by an identified third party; repository decisions and contribution boundaries are documented.
 
 ## Milestone 2: v0.2 candidate specification
 

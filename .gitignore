@@ -7,3 +7,5 @@ htmlcov/
 build/
 .venv/
 venv/
+output/
+tmp/

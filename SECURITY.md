@@ -65,7 +65,7 @@ General policy disagreements, feature requests, and editorial concerns may be re
 
 ## Integrity limitation
 
-The v0.1 reference package demonstrates deterministic canonicalization and SHA-256 digest verification. A digest can reveal modification relative to the recorded value; it does not authenticate the issuer, establish key custody, provide revocation, prove truthful inputs, or establish that an action was lawful, fair, safe, or correct. Reports that exploit confusion about this boundary are treated as documentation or design issues even when the digest computation itself is functioning as implemented.
+The v0.1.1 reference package demonstrates deterministic canonicalization and SHA-256 digest verification. A digest can reveal modification only relative to a trusted expected digest or trusted receipt channel; it does not authenticate the issuer, establish key custody, provide revocation, prove truthful inputs, or establish that an action was lawful, fair, safe, or correct. Browser parity is limited to identical values inside the documented restricted domain. Reports that expose confusion or divergence at these boundaries are treated as documentation, interoperability, or design issues even when one implementation's digest computation is functioning as coded.
 
 ## Safe research expectations
 

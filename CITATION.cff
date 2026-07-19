@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Wright
     given-names: Brittany
-version: 0.1.0
-date-released: 2026-07-15
+version: 0.1.1
+date-released: 2026-07-19
 url: "https://github.com/emotionalinfrastructure/Trust-Receipts"
 abstract: >-
   A candidate governance specification and reference implementation for

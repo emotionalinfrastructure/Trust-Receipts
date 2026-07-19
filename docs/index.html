@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Overview of the AI Trust Receipt candidate governance specification and reference implementation.">
-<title>AI Trust Receipt — Overview v0.1.0 · Emotional Infrastructure™</title>
+<title>AI Trust Receipt — Overview v0.1.1 · Emotional Infrastructure™</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -205,7 +205,7 @@
   <div class="header-inner">
     <div class="header-meta">
       <span class="eyebrow">Emotional Infrastructure™ &nbsp;·&nbsp; Public Release</span>
-      <span class="version-tag">v0.1.0 &nbsp;·&nbsp; July 15, 2026</span>
+      <span class="version-tag">v0.1.1 &nbsp;·&nbsp; July 19, 2026</span>
     </div>
     <h1 class="headline">AI Trust Receipt</h1>
     <p class="subhead">A candidate governance specification for verifiable, auditable records of consequential AI actions.</p>
@@ -226,7 +226,7 @@
     </p>
     <aside class="callout">
       <div class="callout-label">Structural Gap</div>
-      <div class="callout-text">Existing governance frameworks address lifecycle risk, transparency, and human oversight, but there is no broadly adopted, interoperable, user-legible receipt format that couples a consequential AI action to its authority, evidence, outcome, and remedy.</div>
+      <div class="callout-text">This candidate proposes an interoperable, user-legible receipt format that couples a consequential AI action to its authority, evidence, outcome, and remedy.</div>
     </aside>
   </section>
 
@@ -276,20 +276,20 @@
     <hr class="rule">
     <div class="stats-band">
       <div class="stat-item">
-        <span class="stat-num">11/11</span>
-        <span class="stat-label">Automated tests<br>passing</span>
+        <span class="stat-num">23/23</span>
+        <span class="stat-label">Automated Python tests<br>passing</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2/2</span>
+        <span class="stat-label">Fixed browser/Python<br>parity vectors passing</span>
       </div>
       <div class="stat-item">
         <span class="stat-num">9/9</span>
-        <span class="stat-label">Conformance vectors<br>verified</span>
+        <span class="stat-label">Conformance vectors<br>passing</span>
       </div>
       <div class="stat-item">
         <span class="stat-num">12</span>
         <span class="stat-label">Noncompensatory<br>requirements (R1–R12)</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">5</span>
-        <span class="stat-label">JSON Schema<br>contracts (Draft 2020-12)</span>
       </div>
     </div>
   </section>
@@ -302,13 +302,15 @@
       legal-compliance determination, external audit, or regulatory approval. A receipt records what an accountable
       system represents as having occurred and the evidence by which that representation can be checked. Trustworthiness
       depends on truthful inputs, sound governance, operational controls, and independent scrutiny where warranted.
+      The included SHA-256 method detects a content mismatch only relative to a trusted expected digest or trusted receipt
+      channel; it does not authenticate an issuer or define a production digital-signature suite.
     </p>
   </section>
 
   <footer class="footer">
     <div class="footer-item">Brittany Wright &nbsp;·&nbsp; Emotional Infrastructure™</div>
     <div class="footer-item"><a href="mailto:brittanywright@emotionalinfrastructure.org">brittanywright@emotionalinfrastructure.org</a></div>
-    <div class="footer-item"><a href="https://emotionalinfrastructure.org">emotionalinfrastructure.org</a></div>
+    <div class="footer-item"><a href="https://github.com/emotionalinfrastructure/Trust-Receipts">GitHub repository and release</a></div>
   </footer>
 </main>
 </body>

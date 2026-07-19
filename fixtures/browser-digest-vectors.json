@@ -1,0 +1,28 @@
+{
+  "canonicalization_profile": "ei-canonical-json-no-floats-v0.1",
+  "claim_boundary": "Parity applies to identical JSON values inside the shared restricted domain; it is not issuer authentication.",
+  "canonicalization_vectors": [
+    {
+      "id": "nested-unicode-and-key-order",
+      "value": {
+        "z": [
+          3,
+          {
+            "β": "✓",
+            "a": null
+          }
+        ],
+        "a": true
+      },
+      "expected_canonical_json": "{\"a\":true,\"z\":[3,{\"a\":null,\"β\":\"✓\"}]}",
+      "expected_sha256": "sha256:f11df25cba3cdb1e7176436b2d063d96c6b7cfa74cd538ddd0af281bf504ba7c"
+    }
+  ],
+  "receipt_vectors": [
+    {
+      "id": "candidate-v0.1.1-example-receipt",
+      "receipt_path": "evidence/example-receipt.json",
+      "expected_digest": "sha256:d7c7bb911611b8c16074187403d3d214f20214c9cd744369a6a219c2916e3106"
+    }
+  ]
+}

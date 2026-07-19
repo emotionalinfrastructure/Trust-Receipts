@@ -57,6 +57,12 @@ python -m trust_receipt receipt verify \
   --receipt evidence/example-receipt.json
 ```
 
+Verify the fixed browser/Python digest-parity vectors:
+
+```bash
+node tools/verify_browser_parity.mjs
+```
+
 Verify the release artifacts when your change affects packaged outputs:
 
 ```bash

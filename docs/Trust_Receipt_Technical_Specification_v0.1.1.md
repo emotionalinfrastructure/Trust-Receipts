@@ -1,14 +1,16 @@
 ---
 title: "AI Trust Receipt Technical Specification"
-subtitle: "Candidate version 0.1 · Reference implementation profile"
+subtitle: "Candidate version 0.1.1 patch · Reference implementation profile"
 author: "Emotional Infrastructure project"
-date: "15 July 2026"
+date: "19 July 2026"
 lang: en-US
 ---
 
 ## Status and claim boundary
 
 **Document status:** Public-interest technical proposal
+
+**Patch status:** v0.1.1 updates the reference implementation and machine-readable schemas for receipt identifier generation, configurable generated links, explicit reversibility, explicit protected-third-party-information handling, human-review evidence traceability, restricted cross-runtime digest parity, and expanded tests. The workbook remains a v0.1 candidate artifact.
 
 This document defines a candidate technical specification for producing and assessing AI Trust Receipts. It converts the governance requirements in the AI Trust Receipt Workbook into testable data contracts, deterministic decision rules, lifecycle behavior, and conformance evidence.
 
@@ -40,7 +42,7 @@ The package includes a restricted SHA-256 integrity demonstration. It does not p
 
 **Accountable organization** means the legal or organizational entity that accepts responsibility for operating the agent and the review process.
 
-**Action request** means the proposed action, target, state transition, consequence classification, confirmation state, and human-review state submitted to the pre-execution gate.
+**Action request** means the proposed action, target, state transition, consequence classification, confirmation state, human-review state, evidence identifiers actually viewed during a recorded review, reversibility declaration where known, and protected-third-party-information declaration where applicable submitted to the pre-execution gate.
 
 **Affected party** means a person or organization whose interests, access, status, property, communication, or data are materially affected by the action, whether or not that party initiated the request.
 
@@ -100,6 +102,8 @@ Implementations MUST reject malformed or schema-incompatible input before policy
 The reference validator implements only the Draft 2020-12 keywords used by the bundled schemas. It is dependency-free and is not a general-purpose JSON Schema implementation. Production systems SHOULD use a maintained Draft 2020-12 validator and MUST retain the runtime rules described below.
 
 Unknown properties are rejected in the core schemas. An extension profile MUST use a versioned extension object or a new schema identifier rather than silently adding fields to the core record.
+
+The v0.1.1 action-request schema permits explicit `action.reversible`, `consequence.protected_third_party_information`, and `human_review.evidence_viewed` fields. Implementations MUST NOT infer reversibility solely from persistence or infer evidence viewed from evidence availability. An approved review in the v0.1.1 reference gate is denied unless every required evidence identifier is explicitly recorded as viewed and every recorded identifier exists in the available evidence set. Implementations MUST NOT assume the absence of protected third-party information when the deployment has contrary evidence.
 
 ## 6. Trigger and consequence classification
 
@@ -181,12 +185,12 @@ A receipt conforming to this profile MUST identify:
 - The objective and hard constraints governing the action.
 - Each material input, provenance reference, materiality, availability status, and freshness.
 - Delegation recipients, task, passed authority, depth, and returned evidence.
-- Human-review status and authority to intervene.
-- Consequence class, affected-party state, notice requirement, and persistence.
+- Human-review status, authority to intervene, and evidence identifiers explicitly recorded as viewed by the reviewer where review occurred.
+- Consequence class, affected-party state, notice requirement, persistence, and protected-third-party-information flag where known.
 - Remedy availability, reversibility, contestability, accountable review owner, status route, and time limit.
 - Retention basis, routine-access expiry, access roles, prohibited secondary uses, and excluded content.
 - Relationships to earlier receipts where the event follows, supersedes, reverses, delegates from, or remedies an earlier event.
-- Integrity method, canonicalization profile, digest or signature value, and recorded verification state.
+- Integrity method, canonicalization profile, digest value, and recorded verification state.
 
 The receipt MUST record the observed event, not merely the requested event. The reference pipeline simulates successful execution by adopting the proposed state after an `allow` decision; a real executor MUST substitute its observed result.
 
@@ -208,7 +212,7 @@ Material state transitions MUST be represented by a new receipt rather than over
 
 ### 8.3 Identifier and ordering rules
 
-Receipt identifiers MUST be unique within the issuer namespace and SHOULD be globally unique. Creation time is not sufficient as a unique identifier. Ordering across distributed systems SHOULD rely on explicit event relationships and issuer sequence controls where needed, not solely on wall-clock timestamps.
+Receipt identifiers MUST be unique within the issuer namespace and SHOULD be globally unique. Creation time is not sufficient as a unique identifier. The v0.1.1 reference implementation generates a deterministic 256-bit SHA-256 suffix over the complete request, grant, evidence-set, and issuer objects plus terminal status and creation time. Identical canonical inputs intentionally produce the same identifier; deployments remain responsible for unique request identifiers and replay or idempotency policy. A production deployment MAY replace this construction with an issuer-controlled sequence, UUID, ULID, or signed event identifier, provided uniqueness and verifier behavior are documented. Ordering across distributed systems SHOULD rely on explicit event relationships and issuer sequence controls where needed, not solely on wall-clock timestamps.
 
 ## 9. Canonicalization and integrity
 
@@ -216,18 +220,20 @@ Receipt identifiers MUST be unique within the issuer namespace and SHOULD be glo
 
 The reference implementation uses `sha-256-digest-demo` with canonicalization profile `ei-canonical-json-no-floats-v0.1`.
 
-The canonicalizer:
+The canonicalizer's shared Python/browser domain:
 
 1. Rejects all floating-point values.
-2. Encodes JSON as UTF-8.
-3. Sorts object keys lexicographically.
-4. Emits no insignificant whitespace.
-5. Preserves array order.
-6. Computes the digest over the entire receipt except the `integrity.digest` field.
+2. Rejects integers outside the JavaScript safe-integer range.
+3. Rejects unpaired Unicode surrogates and non-string object keys.
+4. Encodes JSON as UTF-8.
+5. Sorts object keys lexicographically by Unicode code point.
+6. Emits no insignificant whitespace.
+7. Preserves array order.
+8. Computes the digest over the entire receipt except the `integrity.digest` field.
 
-The `integrity.verification_status` and any `integrity.key_id` are included in the digest payload. Changing either invalidates the digest. The output format is `sha256:` followed by 64 lowercase hexadecimal characters.
+The `integrity.verification_status` is included in the digest payload. Changing it invalidates the digest. The output format is `sha256:` followed by 64 lowercase hexadecimal characters. The v0.1.1 receipt schema accepts only `sha-256-digest-demo`; it does not reserve a partly specified digital-signature value. A signature method requires a later versioned profile that defines its complete envelope and verification policy.
 
-This restricted profile is deterministic for the data types accepted by the bundled schemas. It is aligned in purpose with RFC 8785 but is not a complete implementation of the JSON Canonicalization Scheme. Implementations MUST NOT label it `JCS` or claim RFC 8785 conformance.
+This restricted profile is deterministic for the supported data types accepted by the bundled schemas. Open state objects MUST also remain inside the restricted domain. It is aligned in purpose with RFC 8785 but is not a complete implementation of the JSON Canonicalization Scheme. Implementations MUST NOT label it `JCS` or claim RFC 8785 conformance. The bundled browser parity vectors show matching digests for identical fixtures; they do not establish parity for values outside this domain.
 
 ### 9.2 Verification
 
@@ -261,7 +267,7 @@ Routine operational access SHOULD expire before archival or legally required ret
 
 When `notice_required` is true, the deployment MUST provide timely notice through an accessible channel unless a documented lawful exception applies. Notice SHOULD identify the event, effect, accountable organization, verification route, and remedy route without exposing protected third-party information.
 
-For C2 and C3 actions, remedy capability MUST be operational before execution. A static policy page is insufficient if no accountable reviewer can act. The receipt MUST name a review owner, route to status or contest, and state the applicable time limit. Where an action is reversible, the deployment SHOULD preserve the minimum before-state or restoration evidence needed to reverse it safely.
+For C2 and C3 actions, remedy capability MUST be operational before execution. A static policy page is insufficient if no accountable reviewer can act. The receipt MUST name a review owner, route to status or contest, and state the applicable time limit. Reversibility is not equivalent to persistence: a persistent change can be reversible or nonreversible, and a nonpersistent action can still require remedy. Where an action is reversible, the deployment SHOULD preserve the minimum before-state or restoration evidence needed to reverse it safely.
 
 Remedy events SHOULD produce their own receipts and reference the original using `remedies` or `reverses`. A reviewer MUST be able to distinguish the original decision, the contested assertion, the review evidence, and the final disposition.
 
@@ -357,7 +363,7 @@ Errors are classified as:
 | Evidence | Missing, disputed, stale, unknown | Deny when material; preserve evidence status without inventing a value. |
 | Dependency | Receipt or remedy service unavailable | Deny governed action; use the documented fail-safe event channel. |
 | Execution | Timeout, partial mutation, target error | Record observed state; roll back or compensate where possible; escalate uncertainty. |
-| Integrity | Digest or signature failure | Mark verification failed; do not overwrite the source record. |
+| Integrity | Digest verification failure | Mark verification failed; do not overwrite the source record. |
 
 Operational logs SHOULD use receipt identifiers and bounded error codes, not full sensitive receipt bodies. Metrics SHOULD include gate denials by code, receipt persistence failures, verification failures, remedy availability, reversal latency, and unresolved partial-conformance deadlines.
 
@@ -385,13 +391,13 @@ The bundled suite contains structural, policy, integrity, projection, and confor
 | T08 | All requirements pass at C3 → conforms / approved boundary. |
 | T09 | Any failure at C3 → does not conform / disabled or manual. |
 
-The automated tests also verify that valid inputs pass the gate; out-of-scope targets, stale required evidence, and unavailable C2 remedy fail closed; denied receipts record no state change; receipts validate against the schema; the human projection contains exact canonical values; action or verification-status tampering invalidates the digest; and the CLI creates and verifies a receipt end to end.
+The v0.1.1 automated tests verify that valid inputs pass the gate; malformed schema inputs are rejected; out-of-scope targets, expiration boundaries, missing confirmation, missing human review, incomplete review-evidence declarations, unpermitted delegation, stale required evidence, unsafe generated-link bases, unavailable receipt service, and unavailable C2 remedy fail closed; denied receipts record no state change; receipts validate against the schema; receipt identifiers bind the complete input preimage; explicit reversibility and protected-third-party-information fields are projected; unsafe canonicalization values are rejected; action or verification-status tampering invalidates the digest; and the CLI creates and verifies a receipt end to end. Separate Node.js vectors reproduce the Python canonicalization and digest results for identical bundled values.
 
 Passing the included tests demonstrates consistency with the included implementation and vectors only. It is not third-party certification or external audit evidence.
 
 ## 19. Versioning and extension
 
-Core schema and profile versions use explicit identifiers. A backward-incompatible field, semantic, integrity, or decision change requires a new version. A verifier MUST reject unknown core versions unless an explicitly configured compatibility profile applies.
+Core schema and profile versions use explicit identifiers. The v0.1.1 patch advances the receipt and action-request schema identifiers to `0.1.1` because it corrects receipt integrity semantics and action-request inputs. Unchanged authority, evidence, assessment, and conformance-profile contracts retain their v0.1 identifiers. A backward-incompatible receipt field, integrity semantic, or conformance-decision change requires a new core version. A verifier MUST reject unknown core versions unless an explicitly configured compatibility profile applies.
 
 Extensions MUST define their namespace, schema, semantic effect, privacy impact, rendering behavior, and whether they are included in integrity protection. An extension MUST NOT weaken a core `MUST` while claiming conformance to the unchanged profile.
 
