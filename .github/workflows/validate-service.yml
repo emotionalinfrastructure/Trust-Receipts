@@ -44,16 +44,23 @@ jobs:
       - name: Bundle Worker without deploying
         run: npx --yes wrangler@4.112.0 deploy --dry-run --outdir dist
 
-  permanent-cloudflare-preflight:
+  permanent-cloudflare-deploy:
     if: github.event_name == 'pull_request' && github.head_ref == 'agent/cloudflare-temporary-live-20260721'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     environment: production
+    defaults:
+      run:
+        working-directory: service
     env:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      BOOTSTRAP_ADMIN_TOKEN: ${{ secrets.BOOTSTRAP_ADMIN_TOKEN }}
     steps:
+      - name: Checkout verified source
+        uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -65,7 +72,258 @@ jobs:
           set -euo pipefail
           test -n "${CLOUDFLARE_ACCOUNT_ID:-}"
           test -n "${CLOUDFLARE_API_TOKEN:-}"
+          test -n "${BOOTSTRAP_ADMIN_TOKEN:-}"
 
       - name: Authenticate to Cloudflare
         shell: bash
         run: npx --yes wrangler@4.112.0 whoami >/dev/null
+
+      - name: Resolve or create production D1 database
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.112.0 d1 list --json > d1-list.json
+          DB_ID="$(jq -r '.[] | select(.name == "ai-trust-receipts") | (.uuid // .id // .database_id)' d1-list.json | head -n 1)"
+          if [ -z "$DB_ID" ] || [ "$DB_ID" = "null" ]; then
+            npx --yes wrangler@4.112.0 d1 create ai-trust-receipts > d1-create.log 2>&1
+            for attempt in $(seq 1 12); do
+              npx --yes wrangler@4.112.0 d1 list --json > d1-list.json
+              DB_ID="$(jq -r '.[] | select(.name == "ai-trust-receipts") | (.uuid // .id // .database_id)' d1-list.json | head -n 1)"
+              if [ -n "$DB_ID" ] && [ "$DB_ID" != "null" ]; then
+                break
+              fi
+              sleep 5
+            done
+          fi
+          test -n "$DB_ID"
+          test "$DB_ID" != "null"
+          echo "DB_ID=$DB_ID" >> "$GITHUB_ENV"
+          rm -f d1-list.json d1-create.log
+
+      - name: Build production configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          DB_ID="$DB_ID" node <<'NODE'
+          const fs = require('node:fs');
+          const config = {
+            name: 'ai-trust-receipt-service',
+            main: 'src/index.mjs',
+            compatibility_date: '2026-07-21',
+            workers_dev: true,
+            vars: {
+              PUBLIC_BASE_URL: 'https://deployment-pending.invalid',
+              ISSUER_ORGANIZATION_ID: 'org:emotional-infrastructure',
+              ISSUER_DISPLAY_NAME: 'Emotional Infrastructure',
+              ISSUER_KEY_ID: 'ei-ed25519-2026-01',
+              ALLOWED_ORIGINS: 'https://demo.emotionalinfrastructure.org,https://emotionalinfrastructure.org',
+              DECISION_TTL_SECONDS: '600'
+            },
+            d1_databases: [{
+              binding: 'DB',
+              database_name: 'ai-trust-receipts',
+              database_id: process.env.DB_ID,
+              migrations_dir: 'migrations'
+            }]
+          };
+          fs.writeFileSync('wrangler.production.jsonc', JSON.stringify(config, null, 2));
+          NODE
+
+      - name: Prepare protected Worker secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          if npx --yes wrangler@4.112.0 secret list --name ai-trust-receipt-service > existing-secrets.json 2>/dev/null; then
+            HAS_PRIVATE="$(jq -r '[.[] | select(.name == "ISSUER_PRIVATE_KEY_PKCS8_BASE64")] | length' existing-secrets.json)"
+            HAS_PUBLIC="$(jq -r '[.[] | select(.name == "ISSUER_PUBLIC_KEY_SPKI_BASE64")] | length' existing-secrets.json)"
+          else
+            HAS_PRIVATE=0
+            HAS_PUBLIC=0
+            printf '[]' > existing-secrets.json
+          fi
+          if [ "$HAS_PRIVATE" = "1" ] && [ "$HAS_PUBLIC" = "1" ]; then
+            BOOTSTRAP_ADMIN_TOKEN="$BOOTSTRAP_ADMIN_TOKEN" node <<'NODE'
+            const fs = require('node:fs');
+            fs.writeFileSync('secrets.production.json', JSON.stringify({
+              BOOTSTRAP_ADMIN_TOKEN: process.env.BOOTSTRAP_ADMIN_TOKEN
+            }));
+            NODE
+          elif [ "$HAS_PRIVATE" = "0" ] && [ "$HAS_PUBLIC" = "0" ]; then
+            node tools/generate-issuer-keypair.mjs > issuer-keypair.json
+            BOOTSTRAP_ADMIN_TOKEN="$BOOTSTRAP_ADMIN_TOKEN" node <<'NODE'
+            const fs = require('node:fs');
+            const pair = JSON.parse(fs.readFileSync('issuer-keypair.json', 'utf8'));
+            fs.writeFileSync('secrets.production.json', JSON.stringify({
+              ISSUER_PRIVATE_KEY_PKCS8_BASE64: pair.private_key_pkcs8_base64,
+              ISSUER_PUBLIC_KEY_SPKI_BASE64: pair.public_key_spki_base64,
+              BOOTSTRAP_ADMIN_TOKEN: process.env.BOOTSTRAP_ADMIN_TOKEN
+            }));
+            NODE
+          else
+            echo "Issuer key configuration is incomplete; refusing to rotate only one half of the key pair." >&2
+            exit 1
+          fi
+          rm -f existing-secrets.json issuer-keypair.json
+
+      - name: Deploy Worker with protected secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.112.0 deploy \
+            --config wrangler.production.jsonc \
+            --secrets-file secrets.production.json \
+            > deploy.log 2>&1
+          python <<'PY'
+          from pathlib import Path
+          import re
+          raw = Path('deploy.log').read_text(errors='replace')
+          clean = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', raw)
+          urls = re.findall(r'https://[A-Za-z0-9.-]+\.workers\.dev', clean)
+          if not urls:
+              raise SystemExit('Wrangler did not return a workers.dev deployment URL.')
+          Path('worker-url.txt').write_text(urls[-1].rstrip('.,)'))
+          PY
+          rm -f deploy.log secrets.production.json
+
+      - name: Apply D1 migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.112.0 d1 migrations apply DB \
+            --remote \
+            --config wrangler.production.jsonc \
+            > migration.log 2>&1
+          rm -f migration.log
+
+      - name: Publish canonical public base URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const config = JSON.parse(fs.readFileSync('wrangler.production.jsonc', 'utf8'));
+          config.vars.PUBLIC_BASE_URL = fs.readFileSync('worker-url.txt', 'utf8').trim();
+          fs.writeFileSync('wrangler.production.jsonc', JSON.stringify(config, null, 2));
+          NODE
+          npx --yes wrangler@4.112.0 deploy \
+            --config wrangler.production.jsonc \
+            > redeploy.log 2>&1
+          rm -f redeploy.log
+
+      - name: Verify live public endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKER_URL="$(cat worker-url.txt)"
+          for attempt in $(seq 1 20); do
+            if curl -fsS "$WORKER_URL/health" > health.json; then
+              break
+            fi
+            sleep 3
+          done
+          jq -e '.status == "ok" and .service == "ai-trust-receipt"' health.json >/dev/null
+          curl -fsS "$WORKER_URL/.well-known/ai-trust-receipt-keys.json" > keys.json
+          jq -e '.keys | length >= 1' keys.json >/dev/null
+
+      - name: Exercise complete operational workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKER_URL="$(cat worker-url.txt)"
+          curl -fsS -X POST "$WORKER_URL/v1/admin/bootstrap" \
+            -H "Authorization: Bearer $BOOTSTRAP_ADMIN_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"organization_id":"org:emotional-infrastructure","label":"production deployment smoke test","scopes":["decisions:evaluate","receipts:finalize","receipts:revoke","receipts:read","remedies:manage"]}' \
+            > bootstrap.json
+          API_KEY="$(jq -r '.api_key' bootstrap.json)"
+          test -n "$API_KEY"
+          test "$API_KEY" != "null"
+          echo "::add-mask::$API_KEY"
+
+          curl -fsS -X POST "$WORKER_URL/v1/decisions" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            --data @examples/create-decision.json \
+            > decision.json
+          jq -e '.decision == "allow"' decision.json >/dev/null
+          DECISION_ID="$(jq -r '.decision_id' decision.json)"
+          EXECUTION_PERMIT="$(jq -r '.execution_permit' decision.json)"
+          echo "::add-mask::$EXECUTION_PERMIT"
+
+          curl -fsS -X POST "$WORKER_URL/v1/decisions/$DECISION_ID/finalize" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "X-Decision-Token: $EXECUTION_PERMIT" \
+            -H "Content-Type: application/json" \
+            --data @examples/finalize-decision.json \
+            > final.json
+          RECEIPT_ID="$(jq -r '.receipt.receipt_id' final.json)"
+          RECEIPT_TOKEN="$(jq -r '.receipt_access_token' final.json)"
+          echo "::add-mask::$RECEIPT_TOKEN"
+          jq -e '.receipt.integrity.digest | startswith("sha256:")' final.json >/dev/null
+
+          jq '{receipt:.receipt,issuer_assertion:.issuer_assertion}' final.json > verify-request.json
+          curl -fsS -X POST "$WORKER_URL/v1/verify" \
+            -H "Content-Type: application/json" \
+            --data @verify-request.json \
+            > verify-before.json
+          jq -e '.valid == true and .revoked == false and .key_known == true' verify-before.json >/dev/null
+
+          curl -fsS "$WORKER_URL/v1/receipts/$RECEIPT_ID" \
+            -H "Authorization: Bearer $RECEIPT_TOKEN" \
+            > receipt.json
+          jq -e --arg id "$RECEIPT_ID" '.receipt.receipt_id == $id' receipt.json >/dev/null
+
+          curl -fsS -X POST "$WORKER_URL/v1/receipts/$RECEIPT_ID/remedies" \
+            -H "Authorization: Bearer $RECEIPT_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"requester_reference":"deployment-smoke-test","reason":"Verify the remedy pathway during production deployment.","requested_action":"review"}' \
+            > remedy.json
+          CASE_ID="$(jq -r '.case_id' remedy.json)"
+          REMEDY_TOKEN="$(jq -r '.access_token' remedy.json)"
+          echo "::add-mask::$REMEDY_TOKEN"
+
+          curl -fsS "$WORKER_URL/v1/remedies/$CASE_ID" \
+            -H "Authorization: Bearer $REMEDY_TOKEN" \
+            > remedy-status.json
+          jq -e '.status == "submitted"' remedy-status.json >/dev/null
+
+          curl -fsS -X POST "$WORKER_URL/v1/remedies/$CASE_ID/status" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"status":"under_review","resolution_summary":"Automated production deployment verification."}' \
+            > remedy-review.json
+          jq -e '.status == "under_review"' remedy-review.json >/dev/null
+
+          curl -fsS -X POST "$WORKER_URL/v1/receipts/$RECEIPT_ID/revoke" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            --data '{"reason":"Automated deployment smoke-test cleanup."}' \
+            > revoke.json
+          jq -e '.revoked == true' revoke.json >/dev/null
+
+          curl -fsS -X POST "$WORKER_URL/v1/verify" \
+            -H "Content-Type: application/json" \
+            --data @verify-request.json \
+            > verify-after.json
+          jq -e '.valid == false and .revoked == true' verify-after.json >/dev/null
+
+          API_KEY_HASH="$(printf '%s' "$API_KEY" | sha256sum | awk '{print $1}')"
+          CLEANUP_SQL="DELETE FROM audit_events WHERE subject IN ('$DECISION_ID','$RECEIPT_ID','$CASE_ID'); DELETE FROM remedy_cases WHERE case_id = '$CASE_ID'; DELETE FROM receipts WHERE receipt_id = '$RECEIPT_ID'; DELETE FROM decisions WHERE decision_id = '$DECISION_ID'; UPDATE api_keys SET status = 'revoked' WHERE key_hash = '$API_KEY_HASH';"
+          npx --yes wrangler@4.112.0 d1 execute DB \
+            --remote \
+            --config wrangler.production.jsonc \
+            --command "$CLEANUP_SQL" \
+            > cleanup.log 2>&1
+          rm -f cleanup.log bootstrap.json decision.json final.json verify-request.json verify-before.json receipt.json remedy.json remedy-status.json remedy-review.json revoke.json verify-after.json
+
+      - name: Record verified deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKER_URL="$(cat worker-url.txt)"
+          echo "### Permanent Cloudflare deployment verified" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Worker URL: $WORKER_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Passed: configuration, OpenAPI, unit tests, Worker bundle, Cloudflare authentication, D1 provisioning, migrations, health, issuer-key discovery, bootstrap, decision authorization, receipt finalization, protected retrieval, cryptographic verification, remedy submission, remedy transition, revocation, post-revocation verification, and smoke-test cleanup." >> "$GITHUB_STEP_SUMMARY"
