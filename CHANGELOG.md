@@ -14,6 +14,10 @@ The project uses semantic versioning as an implementation signal. Candidate stat
 - Scoped API-key authentication, protected receipt retrieval, issuer-key discovery, verification, revocation, remedy submission, and controlled remedy status transitions.
 - Human-readable disclosure generated from the persisted machine receipt.
 - D1 migration, issuer-key generator, API examples, service validation workflow, and manually gated deployment workflow.
+- OpenAPI 3.1 contract covering the eleven operational service endpoints and their authentication boundaries.
+- Candidate and production configuration validators that fail closed on placeholder infrastructure, insecure origins, wildcard production CORS, and missing deployment credentials.
+- Post-deployment smoke testing for health, issuer-key discovery, response controls, and browser-origin preflight behavior.
+- Production-readiness documentation defining release states, stop conditions, and retained deployment evidence.
 
 ### Verification
 
@@ -21,6 +25,9 @@ The project uses semantic versioning as an implementation signal. Candidate stat
 - Local D1 migration applied successfully.
 - End-to-end local workflow passed for bootstrap, gate authorization, finalization, receipt authentication, protected retrieval, public verification, remedy processing, and revocation enforcement.
 - Cloudflare Worker deployment dry-run passed.
+- OpenAPI contract validation passed for 11 paths, 11 operation identifiers, local reference resolution, and five authentication schemes.
+- Candidate configuration validation passed and confirmed that production deployment remains blocked while the D1 identifier is a placeholder.
+- The deployment smoke-test client passed against a controlled local service fixture.
 
 ### Status boundary
 

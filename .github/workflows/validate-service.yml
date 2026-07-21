@@ -31,6 +31,12 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate candidate configuration
+        run: npm run validate:config
+
+      - name: Validate OpenAPI contract
+        run: npm run validate:openapi
+
       - name: Run service tests
         run: npm test
 
