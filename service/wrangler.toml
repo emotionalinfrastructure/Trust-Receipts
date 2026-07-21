@@ -1,0 +1,18 @@
+name = "ai-trust-receipt-service"
+main = "src/index.mjs"
+compatibility_date = "2026-07-21"
+workers_dev = true
+
+[vars]
+PUBLIC_BASE_URL = "https://api.emotionalinfrastructure.org"
+ISSUER_ORGANIZATION_ID = "org:emotional-infrastructure"
+ISSUER_DISPLAY_NAME = "Emotional Infrastructure"
+ISSUER_KEY_ID = "ei-ed25519-2026-01"
+ALLOWED_ORIGINS = "https://demo.emotionalinfrastructure.org,https://emotionalinfrastructure.org"
+DECISION_TTL_SECONDS = "600"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ai-trust-receipts"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"

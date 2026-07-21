@@ -1,0 +1,15 @@
+{
+  "name": "@emotional-infrastructure/ai-trust-receipt-service",
+  "version": "0.2.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes wrangler@4.112.0 dev",
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && npx --yes wrangler@4.112.0 deploy --dry-run --outdir dist",
+    "deploy": "npx --yes wrangler@4.112.0 deploy",
+    "db:migrate:local": "npx --yes wrangler@4.112.0 d1 migrations apply ai-trust-receipts --local",
+    "db:migrate:remote": "npx --yes wrangler@4.112.0 d1 migrations apply ai-trust-receipts --remote",
+    "keys:generate": "node tools/generate-issuer-keypair.mjs"
+  }
+}

@@ -9,3 +9,8 @@ build/
 venv/
 output/
 tmp/
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+issuer-keypair.json
