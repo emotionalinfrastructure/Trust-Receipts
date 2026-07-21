@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "npx --yes wrangler@4.112.0 dev",
     "test": "node --test test/*.test.mjs",
-    "check": "npm test && npx --yes wrangler@4.112.0 deploy --dry-run --outdir dist",
+    "validate:config": "node tools/validate-config.mjs --candidate",
+    "validate:config:production": "node tools/validate-config.mjs --production",
+    "validate:openapi": "node tools/validate-openapi.mjs",
+    "smoke": "node tools/smoke-test.mjs",
+    "check": "npm run validate:config && npm run validate:openapi && npm test && npx --yes wrangler@4.112.0 deploy --dry-run --outdir dist",
     "deploy": "npx --yes wrangler@4.112.0 deploy",
     "db:migrate:local": "npx --yes wrangler@4.112.0 d1 migrations apply ai-trust-receipts --local",
     "db:migrate:remote": "npx --yes wrangler@4.112.0 d1 migrations apply ai-trust-receipts --remote",
