@@ -1,0 +1,15 @@
+        displayName: "Example Organization",
+      },
+      signing,
+      createdAt: "2026-07-20T12:00:02Z",
+    }),
+    /differs from proposed_after_state/u,
+  );
+});
+
+test("operational remedy links must use HTTPS", () => {
+  const input = fixture();
+  input.receipt_context.remedy.status_uri = "http://insecure.example.test/remedy";
+  const errors = validateDecisionEnvelope(input);
+  assert.ok(errors.some((item) => item.field === "receipt_context.remedy.status_uri"));
+});

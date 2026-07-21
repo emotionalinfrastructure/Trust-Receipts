@@ -1,0 +1,75 @@
+  requireDateTime(errors, grant.granted_at, "authority_grant.granted_at");
+  requireDateTime(errors, grant.expires_at, "authority_grant.expires_at");
+  requireEnum(errors, grant.status, "authority_grant.status", new Set(["active", "revoked", "expired", "suspended"]));
+
+  if (requireObject(errors, grant.granting_party, "authority_grant.granting_party")) {
+    rejectUnknown(errors, grant.granting_party, "authority_grant.granting_party", new Set(["party_id", "display_name", "contact_uri"]));
+    requireString(errors, grant.granting_party.party_id, "authority_grant.granting_party.party_id", { max: 160 });
+    requireString(errors, grant.granting_party.display_name, "authority_grant.granting_party.display_name", { max: 200 });
+  }
+  if (requireObject(errors, grant.grantee, "authority_grant.grantee")) {
+    rejectUnknown(errors, grant.grantee, "authority_grant.grantee", new Set(["agent_id", "operator_id", "deployment_id"]));
+    requireString(errors, grant.grantee.agent_id, "authority_grant.grantee.agent_id", { max: 160 });
+    requireString(errors, grant.grantee.operator_id, "authority_grant.grantee.operator_id", { max: 160 });
+    if (grant.grantee.deployment_id !== undefined) requireString(errors, grant.grantee.deployment_id, "authority_grant.grantee.deployment_id", { max: 160 });
+  }
+  if (requireObject(errors, grant.objective, "authority_grant.objective")) {
+    rejectUnknown(errors, grant.objective, "authority_grant.objective", new Set(["description", "version", "hard_constraints", "permitted_preferences", "ambiguity_behavior"]));
+    requireString(errors, grant.objective.description, "authority_grant.objective.description", { max: 1000 });
+    requireString(errors, grant.objective.version, "authority_grant.objective.version", { max: 64 });
+    if (requireArray(errors, grant.objective.hard_constraints, "authority_grant.objective.hard_constraints", { max: 50 })) {
+      grant.objective.hard_constraints.forEach((item, index) => requireString(errors, item, `authority_grant.objective.hard_constraints[${index}]`, { max: 500 }));
+    }
+  }
+  if (requireObject(errors, grant.scope, "authority_grant.scope")) {
+    rejectUnknown(errors, grant.scope, "authority_grant.scope", new Set(["allowed_actions", "allowed_targets", "excluded_actions", "max_consequence_class"]));
+    for (const name of ["allowed_actions", "allowed_targets", "excluded_actions"]) {
+      const min = name === "excluded_actions" ? 0 : 1;
+      if (requireArray(errors, grant.scope[name], `authority_grant.scope.${name}`, { min, max: 100 })) {
+        grant.scope[name].forEach((item, index) => requireString(errors, item, `authority_grant.scope.${name}[${index}]`, { max: 200 }));
+      }
+    }
+    requireEnum(errors, grant.scope.max_consequence_class, "authority_grant.scope.max_consequence_class", CONSEQUENCE);
+  }
+  if (requireObject(errors, grant.confirmation, "authority_grant.confirmation")) {
+    rejectUnknown(errors, grant.confirmation, "authority_grant.confirmation", new Set(["threshold", "required_for"]));
+    requireEnum(errors, grant.confirmation.threshold, "authority_grant.confirmation.threshold", new Set(["none", "user_confirmation", "independent_human_review"]));
+    if (requireArray(errors, grant.confirmation.required_for, "authority_grant.confirmation.required_for", { max: 4 })) {
+      grant.confirmation.required_for.forEach((item, index) => requireEnum(errors, item, `authority_grant.confirmation.required_for[${index}]`, CONSEQUENCE));
+    }
+  }
+  if (requireObject(errors, grant.delegation, "authority_grant.delegation")) {
+    rejectUnknown(errors, grant.delegation, "authority_grant.delegation", new Set(["allowed", "max_depth", "permitted_recipients"]));
+    requireBoolean(errors, grant.delegation.allowed, "authority_grant.delegation.allowed");
+    requireInteger(errors, grant.delegation.max_depth, "authority_grant.delegation.max_depth", 0, 10);
+    if (requireArray(errors, grant.delegation.permitted_recipients, "authority_grant.delegation.permitted_recipients", { max: 100 })) {
+      grant.delegation.permitted_recipients.forEach((item, index) => requireString(errors, item, `authority_grant.delegation.permitted_recipients[${index}]`, { max: 160 }));
+    }
+  }
+}
+
+function validateEvidence(errors, evidence) {
+  if (!requireObject(errors, evidence, "material_evidence")) return;
+  rejectUnknown(errors, evidence, "material_evidence", new Set(["evidence_set_id", "items", "receipt_service_available", "remedy_service_available"]));
+  requireString(errors, evidence.evidence_set_id, "material_evidence.evidence_set_id", { max: 160 });
+  requireBoolean(errors, evidence.receipt_service_available, "material_evidence.receipt_service_available");
+  requireBoolean(errors, evidence.remedy_service_available, "material_evidence.remedy_service_available");
+  if (requireArray(errors, evidence.items, "material_evidence.items", { min: 1, max: 100 })) {
+    evidence.items.forEach((item, index) => {
+      const field = `material_evidence.items[${index}]`;
+      if (!requireObject(errors, item, field)) return;
+      rejectUnknown(errors, item, field, new Set(["evidence_id", "category", "provenance", "materiality", "status", "freshness", "observed_at", "value_reference"]));
+      requireString(errors, item.evidence_id, `${field}.evidence_id`, { max: 160 });
+      requireString(errors, item.category, `${field}.category`, { max: 160 });
+      requireString(errors, item.provenance, `${field}.provenance`, { max: 500 });
+      requireEnum(errors, item.materiality, `${field}.materiality`, new Set(["required", "supporting"]));
+      requireEnum(errors, item.status, `${field}.status`, new Set(["available", "disputed", "incomplete", "unavailable"]));
+      requireEnum(errors, item.freshness, `${field}.freshness`, new Set(["current", "stale", "unknown"]));
+    });
+  }
+}
+
+function validateExecutionResult(errors, result) {
+  if (!requireObject(errors, result, "execution_result")) return;
+  rejectUnknown(errors, result, "execution_result", new Set(["status", "event_time", "after_state", "exception_code", "delegation_results"]));
+  requireEnum(errors, result.status, "execution_result.status", ACTION_STATUS);

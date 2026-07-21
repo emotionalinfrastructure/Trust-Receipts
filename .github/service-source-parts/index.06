@@ -1,0 +1,100 @@
+    "UPDATE receipts SET revoked_at = COALESCE(revoked_at, ?), revocation_reason = COALESCE(revocation_reason, ?) WHERE receipt_id = ?",
+  )
+    .bind(revokedAt, body.reason, receiptId)
+    .run();
+  await insertAudit(env, "receipt.revoked", auth.organization_id, receiptId, { reason: body.reason });
+  const updated = await getReceiptRecord(env, receiptId);
+  return jsonResponse(request, env, {
+    receipt_id: receiptId,
+    revoked: true,
+    revoked_at: updated.revoked_at,
+    reason: updated.revocation_reason,
+  });
+}
+
+async function handleCreateRemedy(request, env, receiptId) {
+  const record = await getReceiptRecord(env, receiptId);
+  if (!record) throw new HttpError(404, "RECEIPT_NOT_FOUND", "The receipt does not exist.");
+  await authorizeReceiptAccess(request, env, record);
+  const body = await readJson(request);
+  const requesterReference = body.requester_reference;
+  const reason = body.reason;
+  const requestedAction = body.requested_action ?? "review";
+  const allowedActions = new Set(["review", "correction", "reversal", "explanation", "deletion"]);
+  if (!allowedActions.has(requestedAction)) {
+    throw new HttpError(422, "INVALID_REQUESTED_ACTION", "requested_action must be review, correction, reversal, explanation, or deletion.");
+  }
+  if (typeof requesterReference !== "string" || requesterReference.length < 1 || requesterReference.length > 200) {
+    throw new HttpError(422, "INVALID_REQUESTER_REFERENCE", "requester_reference must be an opaque value between 1 and 200 characters.");
+  }
+  if (typeof reason !== "string" || reason.length < 1 || reason.length > 4000) {
+    throw new HttpError(422, "INVALID_REMEDY_REASON", "reason must be between 1 and 4000 characters.");
+  }
+  const caseId = randomId("remedy");
+  const accessToken = randomToken("tr_remedy");
+  const accessTokenHash = await sha256Text(accessToken);
+  const createdAt = nowIso();
+  await env.DB.prepare(
+    `INSERT INTO remedy_cases
+     (case_id, receipt_id, organization_id, requester_reference_hash, requested_action, reason, status, access_token_hash, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, 'submitted', ?, ?, ?)`,
+  )
+    .bind(
+      caseId,
+      receiptId,
+      record.organization_id,
+      await sha256Text(requesterReference),
+      requestedAction,
+      reason,
+      accessTokenHash,
+      createdAt,
+      createdAt,
+    )
+    .run();
+  await insertAudit(env, "remedy.submitted", "affected-party", caseId, { receipt_id: receiptId });
+  return jsonResponse(request, env, {
+    case_id: caseId,
+    status: "submitted",
+    access_token: accessToken,
+    status_uri: `${env.PUBLIC_BASE_URL.replace(/\/$/u, "")}/v1/remedies/${caseId}`,
+  }, 201);
+}
+
+async function handleUpdateRemedy(request, env, caseId) {
+  const auth = await requireApiKey(request, env, "remedies:manage");
+  const row = await env.DB.prepare(
+    "SELECT case_id, organization_id, status FROM remedy_cases WHERE case_id = ?",
+  ).bind(caseId).first();
+  if (!row || row.organization_id !== auth.organization_id) {
+    throw new HttpError(404, "REMEDY_CASE_NOT_FOUND", "The remedy case does not exist.");
+  }
+  const body = await readJson(request);
+  const allowedTransitions = {
+    submitted: new Set(["under_review", "withdrawn"]),
+    under_review: new Set(["resolved", "denied", "withdrawn"]),
+    resolved: new Set(),
+    denied: new Set(),
+    withdrawn: new Set(),
+  };
+  if (!allowedTransitions[row.status]?.has(body.status)) {
+    throw new HttpError(409, "INVALID_REMEDY_TRANSITION", `A remedy case in ${row.status} cannot transition to ${String(body.status)}.`);
+  }
+  if (body.resolution_summary !== undefined && (typeof body.resolution_summary !== "string" || body.resolution_summary.length > 4000)) {
+    throw new HttpError(422, "INVALID_RESOLUTION_SUMMARY", "resolution_summary must be at most 4000 characters.");
+  }
+  const updatedAt = nowIso();
+  await env.DB.prepare(
+    "UPDATE remedy_cases SET status = ?, resolution_summary = ?, updated_at = ? WHERE case_id = ?",
+  ).bind(body.status, body.resolution_summary ?? null, updatedAt, caseId).run();
+  await insertAudit(env, "remedy.status_updated", auth.organization_id, caseId, {
+    from: row.status,
+    to: body.status,
+  });
+  return jsonResponse(request, env, {
+    case_id: caseId,
+    status: body.status,
+    resolution_summary: body.resolution_summary ?? null,
+    updated_at: updatedAt,
+  });
+}
+

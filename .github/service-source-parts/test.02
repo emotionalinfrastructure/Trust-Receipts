@@ -1,0 +1,100 @@
+    signing,
+    createdAt: "2026-07-20T12:00:02Z",
+  });
+
+  assert.equal(await verifyReceiptDigest(issued.receipt), true);
+  const result = await verifyIssuedReceipt({
+    receipt: issued.receipt,
+    issuerAssertion: issued.issuer_assertion,
+    publicKeyBase64: signing.publicKeyBase64,
+  });
+  assert.deepEqual(result, {
+    digest_valid: true,
+    issuer_signature_valid: true,
+    valid: true,
+  });
+});
+
+test("content tampering invalidates the overall verification result", async () => {
+  const input = fixture();
+  const gate = evaluateGate(input.action_request, input.authority_grant, input.material_evidence);
+  const signing = await signingConfig();
+  const issued = await issueReceipt({
+    envelope: {
+      ...input,
+      execution_result: {
+        status: "executed",
+        event_time: "2026-07-20T12:00:01Z",
+        after_state: { weekly_summary: true },
+      },
+    },
+    gate,
+    issuer: {
+      publicBaseUrl: "https://api.example.test",
+      organizationId: "org:example",
+      displayName: "Example Organization",
+    },
+    signing,
+    createdAt: "2026-07-20T12:00:02Z",
+  });
+  issued.receipt.action.status = "denied";
+
+  const result = await verifyIssuedReceipt({
+    receipt: issued.receipt,
+    issuerAssertion: issued.issuer_assertion,
+    publicKeyBase64: signing.publicKeyBase64,
+  });
+  assert.equal(result.digest_valid, false);
+  assert.equal(result.valid, false);
+});
+
+test("canonicalization rejects floating-point values", () => {
+  assert.throws(() => canonicalJson({ unsafe: 1.5 }), /safe integers/u);
+});
+
+
+test("human disclosure is derived from the issued machine receipt", async () => {
+  const input = fixture();
+  const gate = evaluateGate(input.action_request, input.authority_grant, input.material_evidence);
+  const signing = await signingConfig();
+  const issued = await issueReceipt({
+    envelope: {
+      ...input,
+      execution_result: {
+        status: "executed",
+        event_time: "2026-07-20T12:00:01Z",
+        after_state: { weekly_summary: true },
+      },
+    },
+    gate,
+    issuer: {
+      publicBaseUrl: "https://api.example.test",
+      organizationId: "org:example",
+      displayName: "Example Organization",
+    },
+    signing,
+    createdAt: "2026-07-20T12:00:02Z",
+  });
+  const disclosure = renderHumanDisclosure(issued.receipt);
+  assert.match(disclosure, /Status: executed/u);
+  assert.ok(disclosure.includes(issued.receipt.receipt_id));
+});
+
+test("an unexpected executed state requires an explicit exception", async () => {
+  const input = fixture();
+  const gate = evaluateGate(input.action_request, input.authority_grant, input.material_evidence);
+  const signing = await signingConfig();
+  await assert.rejects(
+    issueReceipt({
+      envelope: {
+        ...input,
+        execution_result: {
+          status: "executed",
+          event_time: "2026-07-20T12:00:01Z",
+          after_state: { weekly_summary: false },
+        },
+      },
+      gate,
+      issuer: {
+        publicBaseUrl: "https://api.example.test",
+        organizationId: "org:example",

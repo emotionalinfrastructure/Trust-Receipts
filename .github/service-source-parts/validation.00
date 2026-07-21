@@ -1,0 +1,75 @@
+const ACTION_STATUS = new Set(["attempted", "executed", "denied", "delegated", "escalated", "reversed", "expired"]);
+const CONSEQUENCE = new Set(["C0", "C1", "C2", "C3"]);
+const CONFIRMATION = new Set(["not_required", "pending", "confirmed", "denied"]);
+const REVIEW = new Set(["none", "pending", "approved", "rejected"]);
+
+function isObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function push(errors, field, message) {
+  errors.push({ field, message });
+}
+
+function requireObject(errors, value, field) {
+  if (!isObject(value)) {
+    push(errors, field, "must be an object");
+    return false;
+  }
+  return true;
+}
+
+function requireArray(errors, value, field, { min = 0, max = 100 } = {}) {
+  if (!Array.isArray(value)) {
+    push(errors, field, "must be an array");
+    return false;
+  }
+  if (value.length < min || value.length > max) {
+    push(errors, field, `must contain between ${min} and ${max} items`);
+  }
+  return true;
+}
+
+function requireString(errors, value, field, { min = 1, max = 1000, pattern } = {}) {
+  if (typeof value !== "string" || value.length < min || value.length > max) {
+    push(errors, field, `must be a string between ${min} and ${max} characters`);
+    return false;
+  }
+  if (pattern && !pattern.test(value)) push(errors, field, "has an invalid format");
+  return true;
+}
+
+function requireBoolean(errors, value, field) {
+  if (typeof value !== "boolean") push(errors, field, "must be a boolean");
+}
+
+function requireInteger(errors, value, field, min, max) {
+  if (!Number.isInteger(value) || value < min || value > max) {
+    push(errors, field, `must be an integer between ${min} and ${max}`);
+  }
+}
+
+function requireEnum(errors, value, field, allowed) {
+  if (!allowed.has(value)) push(errors, field, `must be one of: ${[...allowed].join(", ")}`);
+}
+
+function requireDateTime(errors, value, field) {
+  if (!requireString(errors, value, field, { max: 80 })) return;
+  if (!/[zZ]|[+-]\d\d:\d\d$/u.test(value) || !Number.isFinite(Date.parse(value))) {
+    push(errors, field, "must be a valid date-time with an explicit UTC offset");
+  }
+}
+
+function requireHttpsUrl(errors, value, field) {
+  if (!requireString(errors, value, field, { max: 500 })) return;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:") push(errors, field, "must be an absolute HTTPS URL");
+  } catch {
+    push(errors, field, "must be an absolute HTTPS URL");
+  }
+}
+
+function rejectUnknown(errors, value, field, allowed) {
+  if (!isObject(value)) return;
+  for (const key of Object.keys(value)) {

@@ -1,0 +1,100 @@
+    const scopes = JSON.parse(value);
+    return Array.isArray(scopes) ? scopes : [];
+  } catch {
+    return [];
+  }
+}
+
+async function requireApiKey(request, env, requiredScope) {
+  const token = bearerToken(request);
+  if (!token) throw new HttpError(401, "AUTHENTICATION_REQUIRED", "A bearer API key is required.");
+  const hash = await sha256Text(token);
+  const row = await env.DB.prepare(
+    "SELECT key_hash, organization_id, label, scopes_json, status FROM api_keys WHERE key_hash = ?",
+  )
+    .bind(hash)
+    .first();
+  if (!row || row.status !== "active") {
+    throw new HttpError(401, "INVALID_API_KEY", "The API key is invalid or inactive.");
+  }
+  const scopes = parseScopes(row.scopes_json);
+  if (!scopes.includes(requiredScope) && !scopes.includes("admin:*")) {
+    throw new HttpError(403, "INSUFFICIENT_SCOPE", `The API key lacks ${requiredScope}.`);
+  }
+  await env.DB.prepare("UPDATE api_keys SET last_used_at = ? WHERE key_hash = ?")
+    .bind(nowIso(), hash)
+    .run();
+  return { ...row, scopes };
+}
+
+function issuerConfig(env) {
+  const required = [
+    "PUBLIC_BASE_URL",
+    "ISSUER_ORGANIZATION_ID",
+    "ISSUER_DISPLAY_NAME",
+    "ISSUER_KEY_ID",
+    "ISSUER_PRIVATE_KEY_PKCS8_BASE64",
+    "ISSUER_PUBLIC_KEY_SPKI_BASE64",
+  ];
+  const missing = required.filter((name) => !env[name]);
+  if (missing.length > 0) {
+    throw new HttpError(503, "ISSUER_NOT_CONFIGURED", `Missing issuer configuration: ${missing.join(", ")}`);
+  }
+  let publicBaseUrl;
+  try {
+    publicBaseUrl = new URL(env.PUBLIC_BASE_URL);
+  } catch {
+    throw new HttpError(503, "ISSUER_NOT_CONFIGURED", "PUBLIC_BASE_URL must be an absolute HTTPS URL.");
+  }
+  if (publicBaseUrl.protocol !== "https:") {
+    throw new HttpError(503, "ISSUER_NOT_CONFIGURED", "PUBLIC_BASE_URL must use HTTPS.");
+  }
+  return {
+    issuer: {
+      publicBaseUrl: env.PUBLIC_BASE_URL,
+      organizationId: env.ISSUER_ORGANIZATION_ID,
+      displayName: env.ISSUER_DISPLAY_NAME,
+    },
+    signing: {
+      keyId: env.ISSUER_KEY_ID,
+      privateKeyBase64: env.ISSUER_PRIVATE_KEY_PKCS8_BASE64,
+      publicKeyBase64: env.ISSUER_PUBLIC_KEY_SPKI_BASE64,
+    },
+  };
+}
+
+async function insertAudit(env, eventType, actor, subject, details) {
+  await env.DB.prepare(
+    "INSERT INTO audit_events (event_id, event_type, actor, subject, details_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+  )
+    .bind(randomId("audit"), eventType, actor, subject, JSON.stringify(details ?? {}), nowIso())
+    .run();
+}
+
+async function getReceiptRecord(env, receiptId) {
+  return env.DB.prepare(
+    `SELECT receipt_id, organization_id, receipt_json, assertion_json, access_token_hash, revoked_at, revocation_reason
+     FROM receipts WHERE receipt_id = ?`,
+  )
+    .bind(receiptId)
+    .first();
+}
+
+async function authorizeReceiptAccess(request, env, record) {
+  const token = bearerToken(request);
+  if (!token) {
+    throw new HttpError(401, "RECEIPT_ACCESS_REQUIRED", "Use a receipt access token or scoped API key as a bearer token.");
+  }
+  const hash = await sha256Text(token);
+  if (record.access_token_hash && await constantTimeTextEqual(hash, record.access_token_hash)) {
+    return { actor: "receipt-holder", organization_id: record.organization_id };
+  }
+  const apiKey = await env.DB.prepare(
+    "SELECT key_hash, organization_id, scopes_json, status FROM api_keys WHERE key_hash = ?",
+  ).bind(hash).first();
+  if (apiKey && apiKey.status === "active" && apiKey.organization_id === record.organization_id) {
+    const scopes = parseScopes(apiKey.scopes_json);
+    if (scopes.includes("receipts:read") || scopes.includes("admin:*")) {
+      await env.DB.prepare("UPDATE api_keys SET last_used_at = ? WHERE key_hash = ?")
+        .bind(nowIso(), hash)
+        .run();

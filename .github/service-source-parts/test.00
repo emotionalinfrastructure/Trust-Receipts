@@ -1,0 +1,100 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { canonicalJson, verifyReceiptDigest } from "../src/canonical.mjs";
+import { evaluateGate } from "../src/gate.mjs";
+import { issueReceipt, verifyIssuedReceipt } from "../src/receipt.mjs";
+import { renderHumanDisclosure } from "../src/render.mjs";
+import { validateDecisionEnvelope } from "../src/validation.mjs";
+
+function base64(bytes) {
+  return Buffer.from(bytes).toString("base64");
+}
+
+function fixture() {
+  return {
+    action_request: {
+      request_id: "request:profile-update:001",
+      requested_at: "2026-07-20T12:00:00Z",
+      agent: {
+        agent_id: "agent:profile-maintainer",
+        operator_id: "operator:example-service",
+        deployment_id: "deployment:prod-us-01",
+        version: "2026.07.1",
+        accountable_organization: "Example Service Organization",
+      },
+      action: {
+        type: "account.profile.update",
+        verb: "update",
+        target: "account:subject-001",
+        before_state: { weekly_summary: false },
+        proposed_after_state: { weekly_summary: true },
+        persistent_change: true,
+        reversible: true,
+      },
+      consequence: {
+        class: "C2",
+        affected_party: true,
+        notice_required: true,
+        rationale: "Updates a persistent account preference.",
+        protected_third_party_information: false,
+      },
+      confirmation: {
+        status: "confirmed",
+        confirmed_at: "2026-07-20T11:58:00Z",
+        confirmation_id: "confirmation:001",
+      },
+      human_review: {
+        status: "approved",
+        reviewer_role: "account-change-reviewer",
+        review_id: "review:001",
+        reviewed_at: "2026-07-20T11:59:00Z",
+        evidence_viewed: ["evidence:confirmation:001", "evidence:review:001"],
+      },
+      delegation: [],
+    },
+    authority_grant: {
+      schema_version: "0.1",
+      grant_id: "grant:profile-maintenance:001",
+      granting_party: {
+        party_id: "party:subject-001",
+        display_name: "Account subject",
+      },
+      grantee: {
+        agent_id: "agent:profile-maintainer",
+        operator_id: "operator:example-service",
+        deployment_id: "deployment:prod-us-01",
+      },
+      objective: {
+        description: "Maintain the account holder's notification preference when explicitly requested.",
+        version: "objective-1",
+        hard_constraints: [
+          "Do not change identity, payment, eligibility, or access-control fields.",
+          "Create a receipt for every attempted persistent change.",
+        ],
+      },
+      scope: {
+        allowed_actions: ["account.profile.update"],
+        allowed_targets: ["account:subject-001"],
+        excluded_actions: ["account.access.disable", "account.payment.update"],
+        max_consequence_class: "C2",
+      },
+      granted_at: "2026-07-01T00:00:00Z",
+      expires_at: "2027-07-01T00:00:00Z",
+      confirmation: {
+        threshold: "independent_human_review",
+        required_for: ["C2", "C3"],
+      },
+      delegation: {
+        allowed: false,
+        max_depth: 0,
+        permitted_recipients: [],
+      },
+      status: "active",
+    },
+    material_evidence: {
+      evidence_set_id: "evidence-set:001",
+      items: [
+        {
+          evidence_id: "evidence:confirmation:001",
+          category: "user-confirmation",

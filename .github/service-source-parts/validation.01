@@ -1,0 +1,75 @@
+    if (!allowed.has(key)) push(errors, `${field}.${key}`, "is not permitted");
+  }
+}
+
+function validateActionRequest(errors, request) {
+  if (!requireObject(errors, request, "action_request")) return;
+  rejectUnknown(errors, request, "action_request", new Set(["request_id", "requested_at", "agent", "action", "consequence", "confirmation", "human_review", "delegation"]));
+  requireString(errors, request.request_id, "action_request.request_id", { max: 160 });
+  requireDateTime(errors, request.requested_at, "action_request.requested_at");
+
+  if (requireObject(errors, request.agent, "action_request.agent")) {
+    rejectUnknown(errors, request.agent, "action_request.agent", new Set(["agent_id", "operator_id", "deployment_id", "version", "accountable_organization"]));
+    requireString(errors, request.agent.agent_id, "action_request.agent.agent_id", { max: 160 });
+    requireString(errors, request.agent.operator_id, "action_request.agent.operator_id", { max: 160 });
+    requireString(errors, request.agent.accountable_organization, "action_request.agent.accountable_organization", { max: 200 });
+    if (request.agent.deployment_id !== undefined) requireString(errors, request.agent.deployment_id, "action_request.agent.deployment_id", { max: 160 });
+    if (request.agent.version !== undefined) requireString(errors, request.agent.version, "action_request.agent.version", { max: 100 });
+  }
+
+  if (requireObject(errors, request.action, "action_request.action")) {
+    rejectUnknown(errors, request.action, "action_request.action", new Set(["type", "verb", "target", "before_state", "proposed_after_state", "persistent_change", "reversible"]));
+    requireString(errors, request.action.type, "action_request.action.type", { max: 128, pattern: /^[a-z][a-z0-9_.-]{2,127}$/u });
+    requireString(errors, request.action.verb, "action_request.action.verb", { max: 80 });
+    requireString(errors, request.action.target, "action_request.action.target", { max: 200 });
+    if (request.action.before_state !== null) requireObject(errors, request.action.before_state, "action_request.action.before_state");
+    if (request.action.proposed_after_state !== null) requireObject(errors, request.action.proposed_after_state, "action_request.action.proposed_after_state");
+    requireBoolean(errors, request.action.persistent_change, "action_request.action.persistent_change");
+    if (request.action.reversible !== undefined) requireBoolean(errors, request.action.reversible, "action_request.action.reversible");
+  }
+
+  if (requireObject(errors, request.consequence, "action_request.consequence")) {
+    rejectUnknown(errors, request.consequence, "action_request.consequence", new Set(["class", "affected_party", "notice_required", "rationale", "protected_third_party_information"]));
+    requireEnum(errors, request.consequence.class, "action_request.consequence.class", CONSEQUENCE);
+    requireBoolean(errors, request.consequence.affected_party, "action_request.consequence.affected_party");
+    requireBoolean(errors, request.consequence.notice_required, "action_request.consequence.notice_required");
+    if (request.consequence.rationale !== undefined) requireString(errors, request.consequence.rationale, "action_request.consequence.rationale", { max: 1200 });
+    if (request.consequence.protected_third_party_information !== undefined) requireBoolean(errors, request.consequence.protected_third_party_information, "action_request.consequence.protected_third_party_information");
+  }
+
+  if (requireObject(errors, request.confirmation, "action_request.confirmation")) {
+    rejectUnknown(errors, request.confirmation, "action_request.confirmation", new Set(["status", "confirmed_at", "confirmation_id"]));
+    requireEnum(errors, request.confirmation.status, "action_request.confirmation.status", CONFIRMATION);
+    if (request.confirmation.confirmed_at !== undefined) requireDateTime(errors, request.confirmation.confirmed_at, "action_request.confirmation.confirmed_at");
+    if (request.confirmation.confirmation_id !== undefined) requireString(errors, request.confirmation.confirmation_id, "action_request.confirmation.confirmation_id", { max: 160 });
+  }
+
+  if (requireObject(errors, request.human_review, "action_request.human_review")) {
+    rejectUnknown(errors, request.human_review, "action_request.human_review", new Set(["status", "reviewer_role", "review_id", "reviewed_at", "evidence_viewed"]));
+    requireEnum(errors, request.human_review.status, "action_request.human_review.status", REVIEW);
+    if (request.human_review.reviewer_role !== undefined) requireString(errors, request.human_review.reviewer_role, "action_request.human_review.reviewer_role", { max: 160 });
+    if (request.human_review.review_id !== undefined) requireString(errors, request.human_review.review_id, "action_request.human_review.review_id", { max: 160 });
+    if (request.human_review.reviewed_at !== undefined) requireDateTime(errors, request.human_review.reviewed_at, "action_request.human_review.reviewed_at");
+    if (request.human_review.evidence_viewed !== undefined && requireArray(errors, request.human_review.evidence_viewed, "action_request.human_review.evidence_viewed", { max: 100 })) {
+      request.human_review.evidence_viewed.forEach((item, index) => requireString(errors, item, `action_request.human_review.evidence_viewed[${index}]`, { max: 160 }));
+    }
+  }
+
+  if (request.delegation !== undefined && requireArray(errors, request.delegation, "action_request.delegation", { max: 20 })) {
+    request.delegation.forEach((item, index) => {
+      const field = `action_request.delegation[${index}]`;
+      if (!requireObject(errors, item, field)) return;
+      rejectUnknown(errors, item, field, new Set(["recipient_id", "task", "authority_passed", "depth"]));
+      requireString(errors, item.recipient_id, `${field}.recipient_id`, { max: 160 });
+      requireString(errors, item.task, `${field}.task`, { max: 500 });
+      requireString(errors, item.authority_passed, `${field}.authority_passed`, { max: 500 });
+      requireInteger(errors, item.depth, `${field}.depth`, 1, 10);
+    });
+  }
+}
+
+function validateAuthorityGrant(errors, grant) {
+  if (!requireObject(errors, grant, "authority_grant")) return;
+  rejectUnknown(errors, grant, "authority_grant", new Set(["schema_version", "grant_id", "granting_party", "grantee", "objective", "scope", "granted_at", "expires_at", "confirmation", "delegation", "status", "revocation"]));
+  if (grant.schema_version !== "0.1") push(errors, "authority_grant.schema_version", "must equal 0.1");
+  requireString(errors, grant.grant_id, "authority_grant.grant_id", { max: 128, pattern: /^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$/u });

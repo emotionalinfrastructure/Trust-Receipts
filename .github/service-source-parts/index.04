@@ -1,0 +1,100 @@
+  }
+  if (record.state !== "allowed_pending_execution") {
+    throw new HttpError(409, "DECISION_NOT_FINALIZABLE", "The decision is not awaiting execution finalization.");
+  }
+  if (Date.parse(record.expires_at) <= Date.now()) {
+    await env.DB.prepare("UPDATE decisions SET state = 'expired' WHERE decision_id = ?").bind(decisionId).run();
+    throw new HttpError(409, "DECISION_EXPIRED", "The execution permit has expired. Re-evaluate the action.");
+  }
+
+  const claim = await env.DB.prepare(
+    "UPDATE decisions SET state = 'finalizing' WHERE decision_id = ? AND state = 'allowed_pending_execution'",
+  ).bind(decisionId).run();
+  if ((claim.meta?.changes ?? 0) !== 1) {
+    const concurrent = await env.DB.prepare("SELECT state, finalized_receipt_id FROM decisions WHERE decision_id = ?")
+      .bind(decisionId)
+      .first();
+    if (concurrent?.finalized_receipt_id) {
+      const existing = await getReceiptRecord(env, concurrent.finalized_receipt_id);
+      return jsonResponse(request, env, {
+        decision_id: decisionId,
+        idempotent_replay: true,
+        receipt: JSON.parse(existing.receipt_json),
+        human_disclosure: renderHumanDisclosure(JSON.parse(existing.receipt_json)),
+        issuer_assertion: JSON.parse(existing.assertion_json),
+      });
+    }
+    throw new HttpError(409, "DECISION_FINALIZATION_IN_PROGRESS", "Another finalization request is already processing this decision.");
+  }
+
+  const executionResult = await readJson(request);
+  const errors = validateExecutionResultInput(executionResult);
+  if (errors.length > 0) {
+    await env.DB.prepare(
+      "UPDATE decisions SET state = 'allowed_pending_execution' WHERE decision_id = ? AND state = 'finalizing'",
+    ).bind(decisionId).run();
+    throw new HttpError(422, "SCHEMA_VALIDATION_FAILED", "The execution result is structurally invalid.", errors);
+  }
+
+  const envelope = {
+    action_request: JSON.parse(record.request_json),
+    authority_grant: JSON.parse(record.grant_json),
+    material_evidence: JSON.parse(record.evidence_json),
+    receipt_context: JSON.parse(record.context_json),
+    execution_result: executionResult,
+  };
+  const gate = JSON.parse(record.gate_json);
+  const createdAt = nowIso();
+  let issued;
+  try {
+    const config = issuerConfig(env);
+    issued = await issueReceipt({ envelope, gate, ...config, createdAt });
+  } catch (error) {
+    await env.DB.prepare(
+      "UPDATE decisions SET state = 'allowed_pending_execution' WHERE decision_id = ? AND state = 'finalizing'",
+    ).bind(decisionId).run();
+    throw error;
+  }
+
+  const receiptAccessToken = randomToken("tr_receipt");
+  const receiptAccessTokenHash = await sha256Text(receiptAccessToken);
+  try {
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO receipts
+         (receipt_id, organization_id, action_type, action_status, consequence_class, digest, key_id, receipt_json, assertion_json, access_token_hash, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).bind(
+        issued.receipt.receipt_id,
+        auth.organization_id,
+        issued.receipt.action.type,
+        issued.receipt.action.status,
+        issued.receipt.consequence.class,
+        issued.receipt.integrity.digest,
+        issued.issuer_assertion.key_id,
+        JSON.stringify(issued.receipt),
+        JSON.stringify(issued.issuer_assertion),
+        receiptAccessTokenHash,
+        issued.receipt.created_at,
+      ),
+      env.DB.prepare(
+        "UPDATE decisions SET state = 'finalized', finalized_receipt_id = ?, finalized_at = ? WHERE decision_id = ? AND state = 'finalizing'",
+      ).bind(issued.receipt.receipt_id, createdAt, decisionId),
+      env.DB.prepare(
+        "INSERT INTO audit_events (event_id, event_type, actor, subject, details_json, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+      ).bind(
+        randomId("audit"),
+        "decision.finalized",
+        auth.organization_id,
+        decisionId,
+        JSON.stringify({ receipt_id: issued.receipt.receipt_id }),
+        createdAt,
+      ),
+    ]);
+  } catch (error) {
+    await env.DB.prepare(
+      "UPDATE decisions SET state = 'allowed_pending_execution' WHERE decision_id = ? AND state = 'finalizing'",
+    ).bind(decisionId).run();
+    throw error;
+  }
+
