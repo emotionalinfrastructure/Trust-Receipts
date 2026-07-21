@@ -123,6 +123,21 @@ jobs:
           PY
           rm -f deploy.log
 
+      - name: Resolve temporary D1 database identifier
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4.112.0 d1 list --json > d1-list.json
+          DB_ID="$(jq -r '.[] | select(.name == "ai-trust-receipts") | (.uuid // .id // .database_id)' d1-list.json | head -n 1)"
+          test -n "$DB_ID"
+          test "$DB_ID" != "null"
+          DB_ID="$DB_ID" node <<'NODE'
+          const fs = require('node:fs');
+          const config = JSON.parse(fs.readFileSync('wrangler.temporary.jsonc', 'utf8'));
+          config.d1_databases[0].database_id = process.env.DB_ID;
+          fs.writeFileSync('wrangler.temporary.jsonc', JSON.stringify(config, null, 2));
+          NODE
+          rm -f d1-list.json
+
       - name: Apply D1 migration
         run: |
           set -euo pipefail
