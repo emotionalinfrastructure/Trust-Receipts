@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local development. Never commit .dev.vars.
+ISSUER_PRIVATE_KEY_PKCS8_BASE64=
+ISSUER_PUBLIC_KEY_SPKI_BASE64=
+BOOTSTRAP_ADMIN_TOKEN=
