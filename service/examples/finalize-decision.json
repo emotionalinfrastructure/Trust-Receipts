@@ -1,0 +1,7 @@
+{
+  "status": "executed",
+  "event_time": "2026-07-21T12:00:01Z",
+  "after_state": {
+    "weekly_summary": true
+  }
+}
