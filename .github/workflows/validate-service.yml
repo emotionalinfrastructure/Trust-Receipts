@@ -1,0 +1,38 @@
+name: Validate operational service
+
+on:
+  pull_request:
+    paths:
+      - "service/**"
+      - ".github/workflows/validate-service.yml"
+      - ".github/workflows/deploy-service.yml"
+  push:
+    branches: [main]
+    paths:
+      - "service/**"
+      - ".github/workflows/validate-service.yml"
+      - ".github/workflows/deploy-service.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: service
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run service tests
+        run: npm test
+
+      - name: Bundle Worker without deploying
+        run: npx --yes wrangler@4.112.0 deploy --dry-run --outdir dist
