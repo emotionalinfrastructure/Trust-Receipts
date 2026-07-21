@@ -6,7 +6,25 @@ The project uses semantic versioning as an implementation signal. Candidate stat
 
 ## [Unreleased]
 
-No unreleased changes are recorded at publication time.
+### Added
+
+- Cloudflare Worker operational service candidate under `service/` with D1 persistence.
+- Two-phase pre-execution gate and terminal finalization workflow using short-lived execution permits.
+- Detached Ed25519 issuer assertions that preserve the v0.1.1 core receipt schema boundary.
+- Scoped API-key authentication, protected receipt retrieval, issuer-key discovery, verification, revocation, remedy submission, and controlled remedy status transitions.
+- Human-readable disclosure generated from the persisted machine receipt.
+- D1 migration, issuer-key generator, API examples, service validation workflow, and manually gated deployment workflow.
+
+### Verification
+
+- 9 of 9 operational service unit tests passed.
+- Local D1 migration applied successfully.
+- End-to-end local workflow passed for bootstrap, gate authorization, finalization, receipt authentication, protected retrieval, public verification, remedy processing, and revocation enforcement.
+- Cloudflare Worker deployment dry-run passed.
+
+### Status boundary
+
+The operational service is an alpha implementation profile and deployment candidate. It is not certification, external audit, adoption as a standard, a legal-compliance determination, regulatory approval, or evidence that a particular deployment is ready for consequential production use.
 
 ## [0.1.1] - 2026-07-19
 
