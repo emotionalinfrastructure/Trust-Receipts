@@ -1,0 +1,95 @@
+name: Validate and deploy demo Worker
+
+on:
+  pull_request:
+    paths:
+      - "demo-worker/**"
+      - ".github/workflows/deploy-demo-worker.yml"
+  push:
+    branches: [main]
+    paths:
+      - "demo-worker/**"
+      - ".github/workflows/deploy-demo-worker.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo-worker-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: demo-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run release-blocker tests
+        run: npm test
+      - name: Validate Worker bundle
+        run: npm run dry-run
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: demo-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require Cloudflare deployment credentials
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID is missing"; exit 1; }
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "CLOUDFLARE_API_TOKEN is missing"; exit 1; }
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Deploy ei-trust-receipt Worker
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run deploy
+      - name: Smoke test live deployment
+        run: |
+          node - <<'NODE'
+          const base = "https://ei-trust-receipt.brittanywright.workers.dev";
+          const root = await fetch(`${base}/`);
+          if (!root.ok) throw new Error(`Root failed: ${root.status}`);
+          if (!root.headers.get("content-security-policy")?.includes("frame-ancestors 'none'")) {
+            throw new Error("CSP missing frame-ancestors");
+          }
+          const schema = await fetch(`${base}/schema/trust-receipt-demo-v0.2.json`);
+          if (!schema.ok) throw new Error(`Schema failed: ${schema.status}`);
+          const evaluated = await fetch(`${base}/api/evaluate`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({
+              consequence_class: "C2",
+              persistent_change: true,
+              affected_party: true,
+              user_confirmation: "denied",
+              human_review: "approved"
+            })
+          });
+          const body = await evaluated.json();
+          if (body.receipt?.gate_decision?.result !== "deny") throw new Error("Explicit denial did not block");
+          if (body.receipt?.gate_decision?.failures?.[0]?.code !== "USER_AUTHORIZATION_DENIED") {
+            throw new Error("Expected USER_AUTHORIZATION_DENIED");
+          }
+          console.log("Live demo smoke test passed");
+          NODE
