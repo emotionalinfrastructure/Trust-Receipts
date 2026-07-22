@@ -76,12 +76,39 @@ def evaluate_gate(
         fail("CONSEQUENCE_EXCEEDS_GRANT", "Consequence class exceeds the grant ceiling.", "request.consequence.class")
 
     confirmation = grant["confirmation"]
-    if consequence in confirmation["required_for"]:
-        threshold = confirmation["threshold"]
-        if threshold == "user_confirmation" and request["confirmation"]["status"] != "confirmed":
-            fail("CONFIRMATION_REQUIRED", "Confirmed user authorization is required.", "request.confirmation.status")
-        if threshold == "independent_human_review" and request["human_review"]["status"] != "approved":
-            fail("HUMAN_REVIEW_REQUIRED", "Independent human approval is required.", "request.human_review.status")
+    confirmation_applies = consequence in confirmation["required_for"]
+    confirmation_status = request["confirmation"]["status"]
+    persistent_affected_change_requires_confirmation = (
+        request["action"]["persistent_change"]
+        and request["consequence"]["affected_party"]
+        and consequence in ("C2", "C3")
+    )
+    grant_requires_user_confirmation = (
+        confirmation_applies and confirmation["threshold"] == "user_confirmation"
+    )
+
+    if confirmation_status == "denied":
+        fail(
+            "USER_AUTHORIZATION_DENIED",
+            "The affected person explicitly denied authorization. Human review cannot override that denial.",
+            "request.confirmation.status",
+        )
+    elif (
+        grant_requires_user_confirmation
+        or persistent_affected_change_requires_confirmation
+    ) and confirmation_status != "confirmed":
+        fail(
+            "CONFIRMATION_REQUIRED",
+            "Confirmed user authorization is required.",
+            "request.confirmation.status",
+        )
+
+    if (
+        confirmation_applies
+        and confirmation["threshold"] == "independent_human_review"
+        and request["human_review"]["status"] != "approved"
+    ):
+        fail("HUMAN_REVIEW_REQUIRED", "Independent human approval is required.", "request.human_review.status")
 
     review = request["human_review"]
     if review["status"] == "approved":
