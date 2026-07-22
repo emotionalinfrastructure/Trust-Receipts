@@ -13,6 +13,10 @@ import {
   validateDecisionEnvelope,
   validateExecutionResultInput,
 } from "./validation.mjs";
+import openapiDocument from "../openapi.json" with { type: "json" };
+
+const SERVICE_VERSION = openapiDocument.info?.version ?? "unknown";
+const SERVICE_REPOSITORY = "https://github.com/emotionalinfrastructure/Trust-Receipts";
 
 const MAX_BODY_BYTES = 256 * 1024;
 const DEFAULT_SCOPES = [
@@ -726,6 +730,28 @@ async function route(request, env) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(request, env) });
   if (request.method === "GET" && path === "/health") {
     return jsonResponse(request, env, { status: "ok", service: "ai-trust-receipt", time: nowIso() });
+  }
+  if (request.method === "GET" && path === "/") {
+    return jsonResponse(request, env, {
+      service: "ai-trust-receipt",
+      name: openapiDocument.info?.title ?? "AI Trust Receipt Operational Service",
+      version: SERVICE_VERSION,
+      status: "ok",
+      documentation: SERVICE_REPOSITORY,
+      endpoints: {
+        health: "/health",
+        version: "/version",
+        openapi: "/openapi.json",
+        issuer_keys: "/.well-known/ai-trust-receipt-keys.json",
+      },
+      time: nowIso(),
+    });
+  }
+  if (request.method === "GET" && path === "/version") {
+    return jsonResponse(request, env, { service: "ai-trust-receipt", version: SERVICE_VERSION, time: nowIso() });
+  }
+  if (request.method === "GET" && path === "/openapi.json") {
+    return jsonResponse(request, env, openapiDocument);
   }
   if (request.method === "GET" && path === "/.well-known/ai-trust-receipt-keys.json") return handleKeys(request, env);
   if (request.method === "POST" && path === "/v1/admin/bootstrap") return handleBootstrap(request, env);

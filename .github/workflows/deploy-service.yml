@@ -17,18 +17,16 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-  TRUST_RECEIPT_BASE_URL: ${{ vars.TRUST_RECEIPT_BASE_URL }}
-  TRUST_RECEIPT_SMOKE_ORIGIN: ${{ vars.TRUST_RECEIPT_SMOKE_ORIGIN }}
+  WRANGLER_VERSION: "4.112.0"
+  D1_DATABASE_NAME: "ai-trust-receipts"
 
 jobs:
-  deploy:
+  # Validation runs with no deployment secrets so code health can be proven
+  # independently of Cloudflare credentials.
+  validate:
+    name: Validate (no deployment secrets)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment:
-      name: production
-      url: ${{ vars.TRUST_RECEIPT_BASE_URL }}
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: service
@@ -41,14 +39,101 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate production configuration
-        run: npm run validate:config:production
+      - name: Validate candidate configuration
+        run: npm run validate:config
 
       - name: Validate API contract
         run: npm run validate:openapi
 
       - name: Validate service and Worker bundle
         run: npm run check
+
+  deploy:
+    name: Deploy Worker
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ vars.TRUST_RECEIPT_BASE_URL }}
+    defaults:
+      run:
+        working-directory: service
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TRUST_RECEIPT_BASE_URL: ${{ vars.TRUST_RECEIPT_BASE_URL }}
+      TRUST_RECEIPT_SMOKE_ORIGIN: ${{ vars.TRUST_RECEIPT_SMOKE_ORIGIN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Fail fast with a precise message if the credentials required for a
+      # real deployment are absent, instead of failing deep inside wrangler.
+      - name: Require deployment secrets and variables
+        run: |
+          missing=()
+          [ -n "${CLOUDFLARE_ACCOUNT_ID}" ] || missing+=("secret CLOUDFLARE_ACCOUNT_ID")
+          [ -n "${CLOUDFLARE_API_TOKEN}" ] || missing+=("secret CLOUDFLARE_API_TOKEN")
+          [ -n "${TRUST_RECEIPT_BASE_URL}" ] || missing+=("variable TRUST_RECEIPT_BASE_URL")
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::Deployment blocked: configure the following in repository or 'production' environment settings:"
+            printf '::error::  - %s\n' "${missing[@]}"
+            echo "Note: BOOTSTRAP_ADMIN_TOKEN is a Worker runtime secret set with 'wrangler secret put'," >&2
+            echo "      it is not consumed by this workflow and is not checked here." >&2
+            exit 1
+          fi
+          echo "All required deployment secrets and variables are present."
+
+      # Resolve the production D1 database id deterministically from the account
+      # by its stable name, so no id is committed to the repository. The
+      # committed wrangler.toml keeps the placeholder id (which the production
+      # config validator rejects); the resolved id is written only into the
+      # ephemeral runner workspace.
+      - name: Resolve production D1 database id
+        run: |
+          set -euo pipefail
+          echo "Resolving D1 database id for '${D1_DATABASE_NAME}'..."
+          db_id="$(npx --yes wrangler@${WRANGLER_VERSION} d1 list --json \
+            | D1_DATABASE_NAME="${D1_DATABASE_NAME}" node -e '
+              let raw = "";
+              process.stdin.on("data", (chunk) => { raw += chunk; });
+              process.stdin.on("end", () => {
+                const wanted = process.env.D1_DATABASE_NAME;
+                let list;
+                try { list = JSON.parse(raw); } catch { console.error("Could not parse wrangler d1 list output."); process.exit(1); }
+                const rows = Array.isArray(list) ? list : (list.result ?? []);
+                const match = rows.find((row) => row && row.name === wanted);
+                if (!match) { console.error("No D1 database named " + wanted + " in this account."); process.exit(1); }
+                const id = match.uuid ?? match.database_id ?? match.id;
+                if (!id) { console.error("Matched D1 database has no id field."); process.exit(1); }
+                process.stdout.write(String(id));
+              });
+            ')"
+          if [ -z "${db_id}" ]; then
+            echo "::error::Unable to resolve a D1 database id for ${D1_DATABASE_NAME}."
+            exit 1
+          fi
+          echo "Resolved D1 database id: ${db_id:0:8}… (redacted)"
+          DB_ID="${db_id}" node -e '
+            const fs = require("node:fs");
+            const placeholder = "00000000-0000-0000-0000-000000000000";
+            let text = fs.readFileSync("wrangler.toml", "utf8");
+            if (!text.includes(placeholder)) { console.error("Expected placeholder database_id not found in wrangler.toml."); process.exit(1); }
+            fs.writeFileSync("wrangler.toml", text.replace(placeholder, process.env.DB_ID));
+          '
+          echo "Wrote resolved database_id into the workspace copy of service/wrangler.toml."
+
+      - name: Validate production configuration
+        run: npm run validate:config:production
+
+      - name: Validate API contract
+        run: npm run validate:openapi
 
       - name: Apply D1 migrations
         if: ${{ inputs.apply_migrations }}

@@ -90,6 +90,46 @@ npm run check
 
 `npm run check` runs the Node test suite and a Wrangler dry-run bundle.
 
+## Deployment
+
+The operational service is the Cloudflare Worker defined by **`service/wrangler.toml`**. There is no root-level Wrangler configuration; the repository root holds the specification and Python reference implementation, not a deployable Worker.
+
+- **Canonical Worker name:** `ai-trust-receipt-service` (matches `wrangler.toml` and the npm package). Do not rename it to `emotionalinfra` or the docs-site names.
+- **Public endpoint:** `https://api.emotionalinfrastructure.org` (`PUBLIC_BASE_URL`), attached as a Worker custom domain/route in the Cloudflare dashboard.
+- **R2:** not used. The service persists only to D1; no R2 bucket or binding is required.
+- **Meta endpoints:** `GET /` (service descriptor), `GET /health`, `GET /version`, and `GET /openapi.json` respond without authentication, so the deployed Worker never returns an unexplained `NOT_FOUND` at its root.
+
+### Cloudflare Builds settings
+
+If deploying from Cloudflare Builds (Git integration), point it at the service directory rather than the repository root:
+
+| Setting | Value |
+| --- | --- |
+| Root directory | `service` |
+| Build command | *(leave empty — no build step is required)* |
+| Deploy command | `npx --yes wrangler@4.112.0 deploy` (or `npm run deploy`) |
+
+Leaving the root directory at `/` causes Cloudflare to treat the repository as a static-assets project and disables runtime code, variables, secrets, bindings, and triggers.
+
+### GitHub Actions deployment
+
+`.github/workflows/deploy-service.yml` is a manual (`workflow_dispatch`) production deploy with two jobs:
+
+1. `validate` — runs with **no** deployment secrets (`validate:config`, `validate:openapi`, `check`).
+2. `deploy` — requires the secrets below, resolves the D1 database id deterministically by name (nothing is committed), runs production validation, applies migrations, deploys, then smoke-tests the live URL.
+
+**Required repository (or `production` environment) secrets:**
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN` — scopes: **Workers Scripts → Edit** and **D1 → Edit**. R2 is *not* needed.
+
+**Required repository (or `production` environment) variables:**
+
+- `TRUST_RECEIPT_BASE_URL` — must equal `PUBLIC_BASE_URL` (`https://api.emotionalinfrastructure.org`).
+- `TRUST_RECEIPT_SMOKE_ORIGIN` — an allowed CORS origin for the post-deploy smoke check, e.g. `https://demo.emotionalinfrastructure.org`.
+
+`BOOTSTRAP_ADMIN_TOKEN` is a **Worker runtime secret** (`wrangler secret put`), not a GitHub Actions secret; it is not consumed by the workflow.
+
 ## Provisioning
 
 ### 1. Create the D1 database
@@ -98,7 +138,7 @@ npm run check
 npx wrangler d1 create ai-trust-receipts
 ```
 
-Replace the placeholder `database_id` in `wrangler.toml` with the returned identifier.
+For **local** work, put the returned identifier in `wrangler.toml` in place of the placeholder `database_id`, but **do not commit it**. In CI the deploy workflow resolves the id automatically by database name, and the committed `wrangler.toml` intentionally keeps the placeholder `00000000-0000-0000-0000-000000000000`, which `validate:config:production` rejects so a misconfigured production deploy fails fast.
 
 ### 2. Apply the migration
 
