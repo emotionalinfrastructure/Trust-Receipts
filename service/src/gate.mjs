@@ -50,7 +50,8 @@ export function evaluateGate(actionRequest, authorityGrant, evidenceSet) {
     failures.push(failure("TARGET_OUT_OF_SCOPE", "action_request.action.target", "The requested target is outside the grant scope."));
   }
 
-  const requestedConsequence = CONSEQUENCE_RANK[actionRequest.consequence?.class];
+  const consequenceClass = actionRequest.consequence?.class;
+  const requestedConsequence = CONSEQUENCE_RANK[consequenceClass];
   const maximumConsequence = CONSEQUENCE_RANK[scope.max_consequence_class];
   if (
     requestedConsequence === undefined ||
@@ -61,15 +62,34 @@ export function evaluateGate(actionRequest, authorityGrant, evidenceSet) {
   }
 
   const confirmationRule = authorityGrant.confirmation ?? {};
-  const confirmationApplies = (confirmationRule.required_for ?? []).includes(
-    actionRequest.consequence?.class,
-  );
-  if (
-    confirmationApplies &&
-    confirmationRule.threshold === "user_confirmation" &&
-    actionRequest.confirmation?.status !== "confirmed"
+  const confirmationApplies = (confirmationRule.required_for ?? []).includes(consequenceClass);
+  const confirmationStatus = actionRequest.confirmation?.status;
+  const persistentAffectedChangeRequiresConfirmation =
+    action.persistent_change === true &&
+    actionRequest.consequence?.affected_party === true &&
+    ["C2", "C3"].includes(consequenceClass);
+  const grantRequiresUserConfirmation =
+    confirmationApplies && confirmationRule.threshold === "user_confirmation";
+
+  if (confirmationStatus === "denied") {
+    failures.push(
+      failure(
+        "USER_AUTHORIZATION_DENIED",
+        "action_request.confirmation.status",
+        "The affected person explicitly denied authorization. Human review cannot override that denial.",
+      ),
+    );
+  } else if (
+    (grantRequiresUserConfirmation || persistentAffectedChangeRequiresConfirmation) &&
+    confirmationStatus !== "confirmed"
   ) {
-    failures.push(failure("CONFIRMATION_REQUIRED", "action_request.confirmation.status", "Confirmed user authorization is required for this action."));
+    failures.push(
+      failure(
+        "CONFIRMATION_REQUIRED",
+        "action_request.confirmation.status",
+        "Confirmed user authorization is required for this action.",
+      ),
+    );
   }
 
   if (
@@ -124,7 +144,7 @@ export function evaluateGate(actionRequest, authorityGrant, evidenceSet) {
     failures.push(failure("RECEIPT_SERVICE_UNAVAILABLE", "material_evidence.receipt_service_available", "A durable receipt cannot be produced."));
   }
   if (
-    ["C2", "C3"].includes(actionRequest.consequence?.class) &&
+    ["C2", "C3"].includes(consequenceClass) &&
     evidenceSet.remedy_service_available !== true
   ) {
     failures.push(failure("REMEDY_SERVICE_UNAVAILABLE", "material_evidence.remedy_service_available", "An operational remedy pathway is required for C2 and C3 actions."));
