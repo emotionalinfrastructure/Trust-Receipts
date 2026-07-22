@@ -14,3 +14,8 @@ dist/
 .wrangler/
 .dev.vars
 issuer-keypair.json
+
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
