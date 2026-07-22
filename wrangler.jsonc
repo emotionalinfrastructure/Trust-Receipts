@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "// wrangler.jsonc
-"name": "trustreceipt",
+  "name": "ei-trust-receipt",
   "compatibility_date": "2026-07-22",
   "observability": {
     "enabled": true
