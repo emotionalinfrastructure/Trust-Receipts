@@ -12,9 +12,9 @@ The **AI Trust Receipt** is a candidate governance specification and reference i
 
 It addresses a specific accountability gap: an AI-mediated system may change access, modify data, communicate externally, delegate authority, or affect another party while leaving the affected person with no coherent record of what occurred, under whose authority, using which evidence, with what result, and through what remedy pathway.
 
-**[Try the live browser demo](https://demo.emotionalinfrastructure.org)**
+**[Try the live Worker-hosted demonstration](https://demo.emotionalinfrastructure.org)**
 
-The public demo interface is source-controlled in [`emotionalinfrastructure/site`](https://github.com/emotionalinfrastructure/site), under the `/trust-receipt` route. This repository remains the canonical source for the candidate specification, schemas, conformance materials, and reference implementation. The demo links back to this repository, release, review issue, and normative specification.
+The public hosted demonstration is source-controlled in [`demo-worker/`](demo-worker/) in this repository. It is a bounded Cloudflare Worker demonstration that generates unsigned, nonpersistent demonstration receipts. The Emotional Infrastructure site links to the hosted demo and to this repository; this repository remains the canonical source for the candidate specification, schemas, conformance materials, reference implementation, demo Worker, and operational-source work.
 
 **[Download the complete candidate v0.1.1 release](release/AI_Trust_Receipt_Complete_Release_v0.1.1.zip)**
 
@@ -66,7 +66,7 @@ request + authority + evidence
           /          \
        deny          allow
         |              |
- denial receipt    bounded execution
+denial receipt    bounded execution
         |              |
         +------> canonical receipt
                         |
@@ -86,6 +86,8 @@ request + authority + evidence
 | [`src/trust_receipt/`](src/trust_receipt/) | Reference implementation and CLI |
 | [`tests/`](tests/) | Automated unit tests |
 | [`browser/`](browser/) | Browser digest implementation and parity boundary |
+| [`demo-worker/`](demo-worker/) | Hosted Cloudflare Worker demonstration source |
+| [`service/`](service/) | Separate operational API alpha source track |
 | [`evidence/`](evidence/) | Example receipt and verification evidence |
 | [`tools/verify_release.py`](tools/verify_release.py) | Reproducible release-verification script |
 | [`release/`](release/) | Complete release archive, release notes, and integrity materials |
@@ -173,6 +175,12 @@ The complete ZIP contains its own `SHA256SUMS.txt` and `release-manifest.json` f
 The v0.1.1 package demonstrates deterministic canonicalization and SHA-256 digest verification in Python and reproduces the fixed expected digest in a browser-compatible JavaScript implementation for identical bundled fixtures inside the documented restricted domain. This is source-equivalent behavior, not a byte-identical port or a claim of universal cross-runtime parity.
 
 A digest can reveal content modification only relative to a trusted expected digest or trusted receipt channel. It does not authenticate the issuer, prove key custody, provide revocation, establish truthful inputs, or prove that the recorded action was lawful, fair, safe, or correct. See the [public claim guide](docs/PUBLIC_CLAIMS.md) for supported descriptions.
+
+## Hosted demo boundary
+
+The hosted public demonstration under `demo-worker/` is intentionally narrower than a production receipt service. It evaluates scenario inputs, generates unique downloadable demonstration receipts, verifies recorded digests, and demonstrates tamper detection. It does not persist receipts and does not issuer-sign them.
+
+The separate `service/` source track may be used for future production-oriented API work, including persistence, key custody, revocation, protected retrieval, remedy workflow, and deployment-readiness gates. That operational source track should not be represented as the current hosted public demo unless it is provisioned, deployed, smoke-tested, and documented as such.
 
 ## Contributing and review
 
