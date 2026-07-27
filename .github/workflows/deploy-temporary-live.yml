@@ -1,0 +1,15 @@
+name: Temporary Cloudflare deployment disabled
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain status
+        run: |
+          echo "Anonymous preview deployment is disabled. Use the protected permanent Cloudflare deployment workflow."
