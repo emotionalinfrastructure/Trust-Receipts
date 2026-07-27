@@ -1,0 +1,67 @@
+name: Enterprise Readiness Runtime
+
+on:
+  pull_request:
+    paths:
+      - "enterprise-readiness/**"
+      - ".github/workflows/enterprise-readiness.yml"
+  push:
+    branches: [main]
+    paths:
+      - "enterprise-readiness/**"
+      - ".github/workflows/enterprise-readiness.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: enterprise-readiness
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm test
+      - run: node scripts/validate-config.mjs
+      - run: npx --yes wrangler@4.114.0 deploy --config wrangler.local.jsonc --dry-run --outdir dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: enterprise-readiness-production
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      EI_READINESS_D1_DATABASE_ID: ${{ secrets.EI_READINESS_D1_DATABASE_ID }}
+      RELEASE_ID: commit-${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/render-wrangler.mjs
+      - name: Apply D1 migrations
+        run: npx --yes wrangler@4.114.0 d1 migrations apply ei-enterprise-readiness --remote --config wrangler.deploy.jsonc
+      - name: Configure runtime secrets
+        shell: bash
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ADMIN_TOKEN: ${{ secrets.EI_READINESS_ADMIN_TOKEN }}
+        run: |
+          printf '%s' "$OPENAI_API_KEY" | npx --yes wrangler@4.114.0 secret put OPENAI_API_KEY --config wrangler.deploy.jsonc
+          printf '%s' "$ADMIN_TOKEN" | npx --yes wrangler@4.114.0 secret put ADMIN_TOKEN --config wrangler.deploy.jsonc
+      - name: Deploy Worker
+        run: npx --yes wrangler@4.114.0 deploy --config wrangler.deploy.jsonc
+      - name: Smoke test provenance endpoints
+        working-directory: .
+        run: |
+          curl --fail --retry 8 --retry-delay 5 https://readiness.emotionalinfrastructure.org/health
+          curl --fail --retry 8 --retry-delay 5 https://readiness.emotionalinfrastructure.org/version | tee version.json
+          grep -q "${GITHUB_SHA}" version.json
