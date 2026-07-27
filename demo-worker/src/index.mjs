@@ -1,5 +1,6 @@
 import { APP_JS, CSS, HTML } from "./assets.mjs";
 import { buildReceipt, RECEIPT_SCHEMA, verifyReceipt } from "./core.mjs";
+import { VERIFICATION_HTML, VERIFICATION_STATUS } from "./verification.mjs";
 
 const MAX_BODY_BYTES = 64 * 1024;
 
@@ -62,6 +63,10 @@ export async function handleRequest(request) {
     if (!["GET", "HEAD"].includes(request.method)) return methodNotAllowed(["GET", "HEAD"]);
     return response(request.method === "HEAD" ? null : HTML, 200, { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" });
   }
+  if (url.pathname === "/verification") {
+    if (!["GET", "HEAD"].includes(request.method)) return methodNotAllowed(["GET", "HEAD"]);
+    return response(request.method === "HEAD" ? null : VERIFICATION_HTML, 200, { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300" });
+  }
   if (url.pathname === "/styles.css") {
     if (!["GET", "HEAD"].includes(request.method)) return methodNotAllowed(["GET", "HEAD"]);
     return response(request.method === "HEAD" ? null : CSS, 200, { "content-type": "text/css; charset=utf-8", "cache-control": "public, max-age=3600" });
@@ -76,7 +81,11 @@ export async function handleRequest(request) {
   }
   if (url.pathname === "/health") {
     if (request.method !== "GET") return methodNotAllowed(["GET"]);
-    return json({ status: "ok", service: "ei-trust-receipt-demo", version: "0.2.0-demo.1", persistence: "none", issuer_authentication: "unsigned_demo" });
+    return json({ status: "ok", service: "ei-trust-receipt-demo", version: "0.3.0-demo.1", persistence: "none", issuer_authentication: "unsigned_demo", verification_surface: "/verification" });
+  }
+  if (url.pathname === "/api/verification/status") {
+    if (request.method !== "GET") return methodNotAllowed(["GET"]);
+    return json(VERIFICATION_STATUS);
   }
   if (url.pathname === "/api/evaluate") {
     if (request.method !== "POST") return methodNotAllowed(["POST", "OPTIONS"]);
