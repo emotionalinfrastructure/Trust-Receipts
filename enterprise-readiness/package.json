@@ -1,0 +1,14 @@
+{
+  "name": "@emotional-infrastructure/enterprise-readiness",
+  "version": "0.1.0-candidate.1",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22.8"},
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test && node scripts/validate-config.mjs",
+    "dev": "wrangler dev --config wrangler.local.jsonc",
+    "deploy": "wrangler deploy --config wrangler.deploy.jsonc"
+  },
+  "devDependencies": {"wrangler": "4.114.0"}
+}
