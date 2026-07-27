@@ -10,8 +10,8 @@
     "demo-worker"
   ],
   "scripts": {
-    "build": "npm run check --workspace=@emotional-infrastructure/trust-receipt-demo-worker",
-    "check": "npm run check --workspace=@emotional-infrastructure/trust-receipt-demo-worker",
+    "build": "npm run check --workspace=@emotional-infrastructure/trust-receipt-demo-worker && wrangler deploy --config wrangler.jsonc --dry-run --outdir .wrangler-dist",
+    "check": "npm run build",
     "test:worker": "npm test --workspace=@emotional-infrastructure/trust-receipt-demo-worker",
     "deploy": "wrangler deploy --config demo-worker/wrangler.jsonc"
   }
