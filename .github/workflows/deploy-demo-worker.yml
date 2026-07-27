@@ -73,6 +73,19 @@ jobs:
           if (!root.headers.get("content-security-policy")?.includes("frame-ancestors 'none'")) {
             throw new Error("CSP missing frame-ancestors");
           }
+          const verification = await fetch(`${base}/verification`);
+          if (!verification.ok) throw new Error(`Verification page failed: ${verification.status}`);
+          const verificationHtml = await verification.text();
+          if (!verificationHtml.includes("Enterprise Verification Runtime")) {
+            throw new Error("Verification page content missing");
+          }
+          const status = await fetch(`${base}/api/verification/status`);
+          if (!status.ok) throw new Error(`Verification status failed: ${status.status}`);
+          const statusBody = await status.json();
+          if (statusBody.posture !== "evidence-bound") throw new Error("Unexpected verification posture");
+          if (statusBody.claims?.durable_persistence !== "NOT_IMPLEMENTED") {
+            throw new Error("Durable persistence boundary not preserved");
+          }
           const schema = await fetch(`${base}/schema/trust-receipt-demo-v0.2.json`);
           if (!schema.ok) throw new Error(`Schema failed: ${schema.status}`);
           const evaluated = await fetch(`${base}/api/evaluate`, {
@@ -91,5 +104,5 @@ jobs:
           if (body.receipt?.gate_decision?.failures?.[0]?.code !== "USER_AUTHORIZATION_DENIED") {
             throw new Error("Expected USER_AUTHORIZATION_DENIED");
           }
-          console.log("Live demo smoke test passed");
+          console.log("Live demo and verification smoke tests passed");
           NODE
