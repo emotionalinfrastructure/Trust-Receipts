@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ei-enterprise-readiness-local",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-07-27",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {"enabled": true, "head_sampling_rate": 1},
+  "vars": {
+    "APP_ENV": "local",
+    "APP_VERSION": "0.1.0-candidate.1",
+    "OPENAI_MODEL": "gpt-5.6",
+    "PUBLIC_BASE_URL": "http://localhost:8787"
+  }
+}

@@ -1,0 +1,3 @@
+import test from "node:test"; import assert from "node:assert/strict"; import { buildReviewPrompt, hasForbiddenOverclaim } from "../src/prompt.mjs"; import { calculateScore } from "../src/scoring.mjs";
+test("prompt fixes deterministic score and evidence boundaries",()=>{const p=buildReviewPrompt({score:calculateScore(),evidence:[{status:"Unresolved",claim:"Deployment parity"}]});assert.match(p,/Do not recalculate or alter it/);assert.match(p,/Unresolved/);assert.match(p,/Never claim certified/)});
+test("overclaim detector reports restricted terms",()=>assert.deepEqual(hasForbiddenOverclaim("This is certified and compliant."),["certified","compliant"]));
