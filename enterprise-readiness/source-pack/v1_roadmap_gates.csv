@@ -1,0 +1,9 @@
+Gate,Name,Required Evidence,Exit Criteria,Owner,Status
+1,Canonicalization,"Authoritative taxonomy, repository map, specification index, canonical URLs",No duplicate or contradictory public artifacts remain,,Open
+2,Reproducible Software,"Frontend/backend repos, locked dependencies, CI, migrations, API spec, local dev guide",Clean-room build and test pass from published instructions,,Open
+3,Deployment Provenance,"Commit embedded in deployment, staging/production separation, health/version endpoints, logs, rollback",Each deployed surface maps to release and commit SHA,,Open
+4,Security Assurance,"Threat model, DPIA, auth model, secrets evidence, abuse tests, rate limiting, retention, SAST/DAST",Security review package complete; critical issues closed or risk-accepted,,Open
+5,Research Validation,"Construct definitions, literature verification, questions, protocol, expert instrument, pilot design, analysis plan",Reviewable research protocol ready for CEITR/IRB/expert panel,,Open
+6,Conformance Program,"Normative registry, machine-readable vectors, verifier, negative tests, interoperability profile",Independent test run can evaluate implementation claims,,Open
+7,Commercial Productization,"Initial customer, bounded use case, SOW, pricing, terms, support, liability, implementation guide",Pilot-ready commercial package completed,,Open
+8,External Validation,"Independent technical review, institutional pilot, academic review, standards feedback, design partner, security review",At least two external validation signals obtained,,Open
