@@ -406,12 +406,12 @@ Future candidate work may define signature suites, issuer discovery, receipt sta
 ## 20. References
 
 - JSON Schema, [Draft 2020-12](https://json-schema.org/draft/2020-12).
-- RFC 8785, [JSON Canonicalization Scheme](https://www.rfc-editor.org/rfc/rfc8785.html).
+- RFC 8785, [JSON Canonicalization Scheme](http://web.archive.org/web/20260217011152/https://www.rfc-editor.org/rfc/rfc8785.html).
 - RFC 9457, [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html).
 - W3C, [Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/).
 - W3C, [Verifiable Credential Data Integrity 1.0](https://www.w3.org/TR/vc-data-integrity/).
 - W3C, [PROV-O: The PROV Ontology](https://www.w3.org/TR/prov-o/).
-- NIST NCCoE, [Software and AI Agent Identity and Authorization](https://www.nccoe.nist.gov/projects/software-and-ai-agent-identity-and-authorization).
+- NIST NCCoE, [Software and AI Agent Identity and Authorization](http://web.archive.org/web/20260714175502/https://www.nccoe.nist.gov/projects/software-and-ai-agent-identity-and-authorization).
 
 ---
 
