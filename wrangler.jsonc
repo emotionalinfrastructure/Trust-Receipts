@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "ei-trust-receipt",
+  "name": "emotionalinfra",
   "main": "demo-worker/src/index.mjs",
   "compatibility_date": "2026-07-22",
   "workers_dev": true,
