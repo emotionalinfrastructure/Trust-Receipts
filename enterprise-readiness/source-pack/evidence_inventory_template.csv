@@ -1,0 +1,5 @@
+Claim ID,Claim,Domain,Evidence Status,Document,Repository,File or Module,Commit SHA,Release,Deployment URL,Test Evidence,Public Page,External Validation,Reviewer Notes
+EI-001,AI Trust Receipt is executable beyond policy prose,Security and governance,Asserted,,emotionalinfrastructure/Trust-Receipts,,,,,,,Requires clean-room reproduction
+EI-002,"Governance runtime includes backend, dashboard, SDK, tests, Docker, Helm",Software architecture,Asserted,,Emotional-Infrastructure/EmotionalOS-2,,26e5584b054480182b0e11c5f44fbabdd1cc9fe7,,,,,Commit statement requires repository verification
+EI-003,Public website accurately reflects current versioned system,Release integrity,Unresolved,,,,,,https://emotionalinfrastructure.org,,,Must reconcile site copy with release map
+EI-004,Cloudflare Worker demo is bound to source commit and release,Infrastructure and DevOps,Unresolved,,,,,,https://ei-trust-receipt.brittanywright.workers.dev/,,,Need health/version endpoint and Worker mapping

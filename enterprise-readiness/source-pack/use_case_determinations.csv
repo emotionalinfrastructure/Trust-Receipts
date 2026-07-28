@@ -1,0 +1,9 @@
+Use Case,Determination,Rationale,Required Before Upgrade
+Academic framework discussion,Conditional Go,Strong conceptual basis; methods and validation incomplete,Construct definitions and review protocol
+Standards-community discussion,Conditional Go,Standards-style materials exist; no formal adoption or consensus,Normative registry and conformance profile
+Controlled reference implementation,Conditional Go,Executable assets exist; reproducibility must be verified,Clean build/test and release manifest
+Internal enterprise pilot,Conditional Go after security review,Architecture appears relevant; sensitive-data use requires assurance,Security package and bounded SOW
+Production processing of sensitive behavioral data,No-Go,"External validation, security assurance, and operational controls not yet established",Independent security review and operational controls
+Compliance or certification claims,No-Go,No evidence of external certification or legal determination,Qualified external determination
+Institutional investment diligence,"Conditional, incomplete","Differentiated assets exist; market, team, metrics, financials incomplete",Data room and operating plan
+Public demonstration,Go with candidate-status disclosure,Demo surfaces can be shown if scope is clear and version claims are precise,Version and deployment provenance endpoints

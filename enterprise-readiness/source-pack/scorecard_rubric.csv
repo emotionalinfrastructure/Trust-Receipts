@@ -1,0 +1,10 @@
+Domain,Weight,Primary Test,Provisional Score,Evidence Needed For 4/5,Evidence Needed For 5/5
+Research maturity,15%,"Conceptually rigorous, methodologically defensible, evidence-bound",3.0,"Expert review, validated constructs, methods protocol",Peer-reviewed or institutionally validated empirical work
+Software architecture,15%,"Coherent, maintainable, testable full-stack system",3.1,"Clean build, test, SDK/API docs, reproducible deployment",Independent implementation or enterprise technical validation
+Infrastructure and DevOps,10%,"Traceable, reproducible, observable, recoverable releases",2.1,"CI/CD evidence, health/version endpoints, rollback, logs",Operational production validation under defined SLA
+Security and governance,15%,"Authority, consent, privacy, auditability, remedy operationalized",3.4,"Threat model, DPIA, authz/authn, SAST/DAST, retention tests",Independent security review or penetration assessment
+Commercial readiness,10%,"Credible buyer, offer, delivery model, implementation pathway",2.8,"Pilot SOW, pricing, terms, support model, success metrics",Paying customer or signed design partner
+Academic readiness,10%,Prepared for research review and publication,2.7,"Research questions, instruments, pilot protocol, IRB determination","Accepted paper, expert review, or funded study"
+Standards readiness,10%,Can enter standards discussion without overclaiming,3.0,"Normative registry, conformance vectors, interoperability profile",External standards-community feedback or interoperability run
+Investment readiness,10%,"Defensible product strategy, market thesis, team model, capital plan",2.2,"Market evidence, metrics, team plan, financial model",Institutional diligence-ready data room
+Release integrity,5%,"Public claims, repositories, versions, deployments agree",2.0,"Canonical index, versioning policy, release manifest, URL map",Independently reproducible release with provenance evidence

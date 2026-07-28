@@ -1,0 +1,1 @@
+import fs from "node:fs"; for(const file of ["wrangler.local.jsonc","wrangler.base.jsonc"]){const text=fs.readFileSync(new URL(`../${file}`,import.meta.url),"utf8");if(!text.includes('"name"')||!text.includes('"main"'))throw new Error(`${file} missing required fields`)} console.log("configuration structure validated");
