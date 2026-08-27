@@ -1,0 +1,28 @@
+{
+  "artifact_id": "EIS-TR-STAGE-003",
+  "version": "0.3.0",
+  "environment": "staging",
+  "repository": "emotionalinfrastructure/Trust-Receipts",
+  "branch": "staging/eis-tr-v0.3",
+  "source_provenance": {
+    "runtime_version": "0.2.0",
+    "source_commit": "2176a810d5c28cac7c67e20b40e48a2a3b849af5",
+    "source_tree": "53fe34d305a16dbe79ac49213c903715ea6a59a0"
+  },
+  "deployment": {
+    "provider": null,
+    "url": null,
+    "deployed_source_revision": null,
+    "deployed_at": null
+  },
+  "verification": {
+    "build": "NOT_RUN",
+    "health_endpoint": "NOT_RUN",
+    "pre_execution_endpoint": "NOT_RUN",
+    "negative_policy_tests": "NOT_RUN",
+    "schema_validation": "NOT_RUN",
+    "receipt_traceability": "NOT_RUN",
+    "staging_smoke_suite": "NOT_RUN"
+  },
+  "determination": "STAGING_PACKAGE_CREATED_NOT_DEPLOYED"
+}
