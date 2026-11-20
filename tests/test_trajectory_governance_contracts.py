@@ -177,7 +177,10 @@ class TrajectoryGovernanceContractTests(unittest.TestCase):
                 }, case["case_id"])
                 self.assertIs(case["execution_permitted"], True, case["case_id"])
             elif case["result_kind"] == "evidence":
-                self.assertIsNone(case["execution_permitted"], case["case_id"]) if case["case_id"] != "EVD-049" else self.assertIs(case["execution_permitted"], False, case["case_id"])
+                if case["case_id"] == "EVD-049":
+                    self.assertIs(case["execution_permitted"], False, case["case_id"])
+                else:
+                    self.assertIsNone(case["execution_permitted"], case["case_id"])
             else:
                 self.fail(f"Unknown result kind for {case['case_id']}")
 
