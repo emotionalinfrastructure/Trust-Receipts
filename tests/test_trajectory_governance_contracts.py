@@ -190,9 +190,6 @@ class TrajectoryGovernanceContractTests(unittest.TestCase):
                 self.assertFalse(case["execution_permitted"], case["case_id"])
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 class LifecycleAndOutcomeContractTests(unittest.TestCase):
     def setUp(self):
@@ -226,3 +223,7 @@ class LifecycleAndOutcomeContractTests(unittest.TestCase):
     def test_unknown_outcome_cannot_be_claimed_verified(self):
         record = json.loads(r'''{"record_type":"execution_outcome","schema_version":"0.1","outcome_id":"outcome:001","action_id":"action:001","authorization_decision_id":"decision:001","delegation_record_id":"dpr:example:001","status":"OUTCOME_UNKNOWN","attempted":true,"observed_at":"2026-11-20T09:02:00Z","provider":{"provider_id":"service:document-store","provider_operation_id":"op:001","provider_status":"committed"},"verification_status":"verified","evidence_references":["provider-event:001"]}''')
         self.assertTrue(list(self.outcome_validator.iter_errors(record)))
+
+
+if __name__ == "__main__":
+    unittest.main()
