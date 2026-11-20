@@ -180,3 +180,37 @@ class TrajectoryGovernanceContractTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LifecycleAndOutcomeContractTests(unittest.TestCase):
+    def setUp(self):
+        self.lifecycle_schema = load_json(SCHEMAS / "delegation-lifecycle-event.v0.1.schema.json")
+        self.outcome_schema = load_json(SCHEMAS / "execution-outcome.v0.1.schema.json")
+        self.lifecycle_validator = Draft202012Validator(self.lifecycle_schema, format_checker=FormatChecker())
+        self.outcome_validator = Draft202012Validator(self.outcome_schema, format_checker=FormatChecker())
+
+    def test_lifecycle_schema_is_valid_draft_2020_12(self):
+        Draft202012Validator.check_schema(self.lifecycle_schema)
+
+    def test_execution_outcome_schema_is_valid_draft_2020_12(self):
+        Draft202012Validator.check_schema(self.outcome_schema)
+
+    def test_revocation_is_a_separate_lifecycle_event(self):
+        record = json.loads(r'''{"record_type":"delegation_lifecycle_event","schema_version":"0.1","event_id":"life:001","event_type":"REVOKED","delegation_record_id":"dpr:example:001","occurred_at":"2026-11-20T09:10:00Z","effective_at":"2026-11-20T09:10:00Z","actor":{"actor_id":"principal:example","actor_type":"principal"},"authority_reference":"principal-session:revoke:001","reason_code":"PRINCIPAL_REVOKED","evidence_references":["event-log:001"]}''')
+        self.assertEqual(list(self.lifecycle_validator.iter_errors(record)), [])
+
+    def test_correction_event_requires_superseded_event_and_note(self):
+        record = json.loads(r'''{"record_type":"delegation_lifecycle_event","schema_version":"0.1","event_id":"life:001","event_type":"CORRECTION_RECORDED","delegation_record_id":"dpr:example:001","occurred_at":"2026-11-20T09:10:00Z","effective_at":"2026-11-20T09:10:00Z","actor":{"actor_id":"principal:example","actor_type":"principal"},"authority_reference":"principal-session:revoke:001","reason_code":"PRINCIPAL_REVOKED","evidence_references":["event-log:001"]}''')
+        self.assertTrue(list(self.lifecycle_validator.iter_errors(record)))
+
+    def test_valid_executed_outcome_requires_verification_evidence(self):
+        record = json.loads(r'''{"record_type":"execution_outcome","schema_version":"0.1","outcome_id":"outcome:001","action_id":"action:001","authorization_decision_id":"decision:001","delegation_record_id":"dpr:example:001","status":"EXECUTED","attempted":true,"observed_at":"2026-11-20T09:02:00Z","provider":{"provider_id":"service:document-store","provider_operation_id":"op:001","provider_status":"committed"},"verification_status":"verified","evidence_references":["provider-event:001"]}''')
+        self.assertEqual(list(self.outcome_validator.iter_errors(record)), [])
+
+    def test_executed_outcome_without_evidence_is_rejected(self):
+        record = json.loads(r'''{"record_type":"execution_outcome","schema_version":"0.1","outcome_id":"outcome:001","action_id":"action:001","authorization_decision_id":"decision:001","delegation_record_id":"dpr:example:001","status":"EXECUTED","attempted":true,"observed_at":"2026-11-20T09:02:00Z","provider":{"provider_id":"service:document-store","provider_operation_id":"op:001","provider_status":"committed"},"verification_status":"verified","evidence_references":[]}''')
+        self.assertTrue(list(self.outcome_validator.iter_errors(record)))
+
+    def test_unknown_outcome_cannot_be_claimed_verified(self):
+        record = json.loads(r'''{"record_type":"execution_outcome","schema_version":"0.1","outcome_id":"outcome:001","action_id":"action:001","authorization_decision_id":"decision:001","delegation_record_id":"dpr:example:001","status":"OUTCOME_UNKNOWN","attempted":true,"observed_at":"2026-11-20T09:02:00Z","provider":{"provider_id":"service:document-store","provider_operation_id":"op:001","provider_status":"committed"},"verification_status":"verified","evidence_references":["provider-event:001"]}''')
+        self.assertTrue(list(self.outcome_validator.iter_errors(record)))
