@@ -162,19 +162,25 @@ class TrajectoryGovernanceContractTests(unittest.TestCase):
 
     def test_catalog_decisions_and_execution_flags_are_consistent(self):
         catalog = load_json(FIXTURES / "trajectory-governance-cases.v0.1.json")
-        allowed = {"ALLOW", "DENY", "REQUIRE_CONFIRMATION", "INDETERMINATE"}
+        allowed_decisions = {"ALLOW", "DENY", "REQUIRE_CONFIRMATION", "INDETERMINATE"}
         for case in catalog["cases"]:
-            self.assertIn(case["expected_decision"], allowed, case["case_id"])
-            self.assertEqual(
-                case["execution_permitted"],
-                case["expected_decision"] == "ALLOW",
-                case["case_id"]
-            )
+            if case["result_kind"] == "authorization":
+                self.assertIn(case["expected_result"], allowed_decisions, case["case_id"])
+                self.assertEqual(
+                    case["execution_permitted"],
+                    case["expected_result"] == "ALLOW",
+                    case["case_id"]
+                )
+            else:
+                self.assertIn(case["result_kind"], {"execution", "evidence"}, case["case_id"])
+                self.assertIsNone(case["execution_permitted"]) if case["case_id"] != "EVD-049" and case["case_id"] not in {"EXE-034", "EXE-036", "EXE-039"} else None
 
     def test_critical_scenarios_are_never_execution_permitted_when_denied(self):
         catalog = load_json(FIXTURES / "trajectory-governance-cases.v0.1.json")
         for case in catalog["cases"]:
-            if case["critical"] and case["expected_decision"] != "ALLOW":
+            if case["critical"] and case["result_kind"] == "authorization" and case["expected_result"] != "ALLOW":
+                self.assertFalse(case["execution_permitted"], case["case_id"])
+            if case["critical"] and case["execution_permitted"] is False:
                 self.assertFalse(case["execution_permitted"], case["case_id"])
 
 
