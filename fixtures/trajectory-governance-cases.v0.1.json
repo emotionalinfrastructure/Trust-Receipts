@@ -1,0 +1,1044 @@
+{
+  "catalog_id": "EII-TG-TEST-001",
+  "version": "0.1.0-candidate",
+  "status": "test_inventory_not_executed",
+  "source_specification": "EII-TG-EXT-001",
+  "decision_vocabulary": [
+    "ALLOW",
+    "DENY",
+    "REQUIRE_CONFIRMATION",
+    "INDETERMINATE"
+  ],
+  "cases": [
+    {
+      "case_id": "DPR-001",
+      "domain": "delegation_integrity",
+      "scenario": "Valid principal and authority source",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "ALLOW",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-002",
+      "domain": "delegation_integrity",
+      "scenario": "Missing principal identifier",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-003",
+      "domain": "delegation_integrity",
+      "scenario": "Unknown delegate identity",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-004",
+      "domain": "delegation_integrity",
+      "scenario": "Authority source cannot be validated",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-005",
+      "domain": "delegation_integrity",
+      "scenario": "Child scope exceeds parent action scope",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-006",
+      "domain": "delegation_integrity",
+      "scenario": "Subdelegation attempted when prohibited",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-007",
+      "domain": "delegation_integrity",
+      "scenario": "Action appears in both allow and deny lists",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-008",
+      "domain": "delegation_integrity",
+      "scenario": "Target resource outside grant scope",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-009",
+      "domain": "delegation_integrity",
+      "scenario": "Requested purpose differs from grant purpose",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "DPR-010",
+      "domain": "delegation_integrity",
+      "scenario": "Ambiguous expiry or malformed temporal interval",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-001",
+        "DPR-025"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-011",
+      "domain": "temporal_integrity",
+      "scenario": "Active grant within effective interval",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "ALLOW",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-012",
+      "domain": "temporal_integrity",
+      "scenario": "Grant expired before evaluation",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-013",
+      "domain": "temporal_integrity",
+      "scenario": "Grant effective time is in the future",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-014",
+      "domain": "temporal_integrity",
+      "scenario": "Parent grant revoked before child execution",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-015",
+      "domain": "temporal_integrity",
+      "scenario": "Revocation occurs between initial check and execution",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-016",
+      "domain": "temporal_integrity",
+      "scenario": "Clock drift exceeds declared tolerance",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-017",
+      "domain": "temporal_integrity",
+      "scenario": "Human confirmation expired",
+      "critical": false,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "REQUIRE_CONFIRMATION",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-018",
+      "domain": "temporal_integrity",
+      "scenario": "Material policy version changed after evaluation",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-019",
+      "domain": "temporal_integrity",
+      "scenario": "Same idempotency key retried for same action",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "ALLOW",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "TMP-020",
+      "domain": "temporal_integrity",
+      "scenario": "Previously consumed permit replayed for a new action",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-018",
+        "AUTH-007",
+        "AUTH-018"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-021",
+      "domain": "scope_integrity",
+      "scenario": "Draft permission used to send externally",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-022",
+      "domain": "scope_integrity",
+      "scenario": "Read permission used to modify resource",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-023",
+      "domain": "scope_integrity",
+      "scenario": "Single-resource grant used on another resource",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-024",
+      "domain": "scope_integrity",
+      "scenario": "Permitted purpose replaced with unrelated purpose",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-025",
+      "domain": "scope_integrity",
+      "scenario": "Recipient substituted after confirmation",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "REQUIRE_CONFIRMATION",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-026",
+      "domain": "scope_integrity",
+      "scenario": "Transaction amount materially changed after approval",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "REQUIRE_CONFIRMATION",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-027",
+      "domain": "scope_integrity",
+      "scenario": "Silence interpreted as consent",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-028",
+      "domain": "scope_integrity",
+      "scenario": "Child grant omits parent constraints",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-029",
+      "domain": "scope_integrity",
+      "scenario": "Wildcard scope used without explicit authority",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "SCP-030",
+      "domain": "scope_integrity",
+      "scenario": "Credential possession treated as delegation authority",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "DPR-003",
+        "DPR-014",
+        "AUTH-005"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-031",
+      "domain": "execution_integrity",
+      "scenario": "Authorized action reaches execution boundary",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "ALLOW",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-032",
+      "domain": "execution_integrity",
+      "scenario": "Authorization service unavailable",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-033",
+      "domain": "execution_integrity",
+      "scenario": "Provider timeout leaves operation status uncertain",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-034",
+      "domain": "execution_integrity",
+      "scenario": "Provider supplies authoritative completion evidence",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "OUTCOME_VERIFIED",
+      "result_kind": "execution"
+    },
+    {
+      "case_id": "EXE-035",
+      "domain": "execution_integrity",
+      "scenario": "Provider returns ambiguous status",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INDETERMINATE",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-036",
+      "domain": "execution_integrity",
+      "scenario": "Execution fails after valid authorization",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "EXECUTION_FAILED_RECORDED",
+      "result_kind": "execution"
+    },
+    {
+      "case_id": "EXE-037",
+      "domain": "execution_integrity",
+      "scenario": "Duplicate non-idempotent operation detected",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-038",
+      "domain": "execution_integrity",
+      "scenario": "Retry attempts to change action parameters",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EXE-039",
+      "domain": "execution_integrity",
+      "scenario": "Provider reports partial execution",
+      "critical": false,
+      "execution_permitted": true,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "PARTIAL_OUTCOME_RECORDED",
+      "result_kind": "execution"
+    },
+    {
+      "case_id": "EXE-040",
+      "domain": "execution_integrity",
+      "scenario": "External provider executes beyond authorized target",
+      "critical": true,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "AUTH-007",
+        "AUTH-018",
+        "AUTH-021"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "DENY",
+      "result_kind": "authorization"
+    },
+    {
+      "case_id": "EVD-041",
+      "domain": "evidence_integrity",
+      "scenario": "Signed receipt content modified after issuance",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "INTEGRITY_FAILURE",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-042",
+      "domain": "evidence_integrity",
+      "scenario": "Execution claim lacks outcome evidence",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "OUTCOME_UNVERIFIED",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-043",
+      "domain": "evidence_integrity",
+      "scenario": "Denied action represented as completed",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "RECEIPT_CONTRADICTION_REJECTED",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-044",
+      "domain": "evidence_integrity",
+      "scenario": "Receipt references nonexistent DPR",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "PROVENANCE_REFERENCE_REJECTED",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-045",
+      "domain": "evidence_integrity",
+      "scenario": "Receipt generated without authorization decision",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "RECEIPT_INCOMPLETE",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-046",
+      "domain": "evidence_integrity",
+      "scenario": "Affected person challenges receipt",
+      "critical": false,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "REVIEW_CASE_OPENED",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-047",
+      "domain": "evidence_integrity",
+      "scenario": "Correction overwrites original event",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "IMMUTABILITY_VIOLATION",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-048",
+      "domain": "evidence_integrity",
+      "scenario": "Receipt discloses unnecessary sensitive content",
+      "critical": true,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "PRIVACY_FAILURE",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-049",
+      "domain": "evidence_integrity",
+      "scenario": "Revocation event is recorded and enforced",
+      "critical": false,
+      "execution_permitted": false,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "REVOCATION_ENFORCED",
+      "result_kind": "evidence"
+    },
+    {
+      "case_id": "EVD-050",
+      "domain": "evidence_integrity",
+      "scenario": "Independent reviewer reconstructs authority and outcome",
+      "critical": false,
+      "execution_permitted": null,
+      "status": "NOT_EXECUTED",
+      "requirement_refs": [
+        "TR-001",
+        "TR-020"
+      ],
+      "evidence_expected": [
+        "input_fixture",
+        "decision_record",
+        "execution_or_nonexecution_record",
+        "receipt_or_failure_record"
+      ],
+      "expected_result": "RECONSTRUCTION_PASSED",
+      "result_kind": "evidence"
+    }
+  ]
+}

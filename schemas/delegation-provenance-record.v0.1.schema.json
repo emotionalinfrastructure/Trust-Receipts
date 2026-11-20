@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trajectory-governance/delegation-provenance-record.v0.1.schema.json",
+  "title": "Delegation Provenance Record v0.1",
+  "description": "Immutable grant-event record for bounded delegation. Revocation and other lifecycle changes are separate append-only events.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type",
+    "schema_version",
+    "record_id",
+    "issued_at",
+    "principal",
+    "authority_source",
+    "delegate",
+    "purpose",
+    "scope",
+    "constraints",
+    "temporal",
+    "subdelegation"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "delegation_provenance_record"
+    },
+    "schema_version": {
+      "const": "0.1"
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principal_id",
+        "principal_type"
+      ],
+      "properties": {
+        "principal_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "principal_type": {
+          "enum": [
+            "human",
+            "organization",
+            "service_identity",
+            "agent"
+          ]
+        },
+        "authentication_reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "authority_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_type",
+        "source_reference",
+        "validation_status"
+      ],
+      "properties": {
+        "source_type": {
+          "enum": [
+            "direct_instruction",
+            "organizational_policy",
+            "parent_delegation",
+            "contractual_authority",
+            "administrative_authority",
+            "statutory_authority",
+            "other"
+          ]
+        },
+        "source_reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "policy_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "evidence_reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "validation_status": {
+          "enum": [
+            "validated",
+            "pending",
+            "invalid",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "delegate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "delegate_id",
+        "delegate_type"
+      ],
+      "properties": {
+        "delegate_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "delegate_type": {
+          "enum": [
+            "ai_agent",
+            "software_service",
+            "human_operator",
+            "organization",
+            "external_service"
+          ]
+        },
+        "system_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "system_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "operator_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "deployment_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "parent_delegation": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "parent_record_id",
+            "delegator_id",
+            "delegation_depth"
+          ],
+          "properties": {
+            "parent_record_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "delegator_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "delegation_depth": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "purpose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose_code",
+        "description"
+      ],
+      "properties": {
+        "purpose_code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "prohibited_uses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_actions",
+        "denied_actions",
+        "allowed_resources",
+        "denied_resources",
+        "allowed_recipients",
+        "denied_recipients",
+        "max_consequence_class"
+      ],
+      "properties": {
+        "allowed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+          },
+          "uniqueItems": true
+        },
+        "denied_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+          },
+          "uniqueItems": true
+        },
+        "allowed_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "uniqueItems": true
+        },
+        "denied_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "uniqueItems": true
+        },
+        "allowed_recipients": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "uniqueItems": true
+        },
+        "denied_recipients": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "uniqueItems": true
+        },
+        "max_consequence_class": {
+          "enum": [
+            "C0",
+            "C1",
+            "C2",
+            "C3"
+          ]
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_confirmation_required",
+        "data_reuse_allowed",
+        "onward_disclosure_allowed"
+      ],
+      "properties": {
+        "human_confirmation_required": {
+          "type": "boolean"
+        },
+        "data_reuse_allowed": {
+          "type": "boolean"
+        },
+        "onward_disclosure_allowed": {
+          "type": "boolean"
+        },
+        "confirmation_policy_reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "retention_policy_reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "temporal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effective_at",
+        "expires_at"
+      ],
+      "properties": {
+        "effective_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "subdelegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed",
+        "max_depth"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 32
+        },
+        "permitted_delegate_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ai_agent",
+              "software_service",
+              "human_operator",
+              "organization",
+              "external_service"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "extension": {
+      "type": "object",
+      "description": "Namespaced extension properties. Extension consumers must ignore unknown namespaces safely and must not weaken core requirements.",
+      "propertyNames": {
+        "pattern": "^[a-zA-Z][a-zA-Z0-9.-]{1,127}$"
+      },
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  }
+}
