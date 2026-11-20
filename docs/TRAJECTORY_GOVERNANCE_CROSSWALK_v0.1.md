@@ -26,6 +26,8 @@
 | Grant identity and basic scope | Authority Grant contract and gate | No distinct immutable DPR envelope | Partially covered |
 | Principal authority basis | Granting party identity | Authority-to-delegate evidence and validation semantics | Gap |
 | Parent-child authority inheritance | Delegation metadata and limits | Multidimensional parent constraint intersection | Gap |
+| Immutable lifecycle history | Receipt/assertion revocation and audit events | Separate DPR lifecycle-event schema and append-only transition validation | Partial |
+| Execution outcome evidence | Finalization and receipt status | Formal outcome record with conditional verification requirements | Partial |
 | Explicit negative scope | Excluded actions | Deny-overrides semantics across all scope dimensions | Partial |
 | Purpose binding | Objective description and hard constraints | Machine-readable purpose code and evaluation | Partial |
 | Recipient binding | Not established as a general grant constraint | Recipient allow/deny scope | Gap |
@@ -54,7 +56,7 @@
 
 | Step | Deliverable | Acceptance evidence |
 |---|---|---|
-| 1 | DPR and authorization-decision schemas | Draft 2020-12 meta-schema validation and positive/negative fixtures |
+| 1 | DPR, lifecycle-event, authorization-decision, and execution-outcome schemas | Draft 2020-12 meta-schema validation and positive/negative fixtures |
 | 2 | DPR registry and lifecycle events | Persistence migration, immutable grant events, revocation tests |
 | 3 | Provenance-chain validator | Parent/child scope-intersection tests |
 | 4 | Authorization evaluator | ALLOW, DENY, REQUIRE_CONFIRMATION, INDETERMINATE tests |
