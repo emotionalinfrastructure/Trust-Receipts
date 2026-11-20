@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://emotionalinfrastructure.org/schemas/trajectory-governance/authorization-decision.v0.1.schema.json",
+  "title": "Trajectory Governance Authorization Decision v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_type",
+    "schema_version",
+    "decision_id",
+    "evaluated_at",
+    "decision",
+    "principal_id",
+    "delegate_id",
+    "delegation_record_id",
+    "action_binding",
+    "policy",
+    "reason_codes",
+    "single_use"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "authorization_decision"
+    },
+    "schema_version": {
+      "const": "0.1"
+    },
+    "decision_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "REQUIRE_CONFIRMATION",
+        "INDETERMINATE"
+      ]
+    },
+    "principal_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "delegate_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "delegation_record_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "action_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "action_type",
+        "target",
+        "purpose_code",
+        "request_digest"
+      ],
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "action_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "recipient": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "purpose_code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+        },
+        "request_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "policy_version"
+      ],
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      }
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{1,63}$"
+      },
+      "uniqueItems": true
+    },
+    "confirmation_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 512
+    },
+    "revalidation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "performed",
+        "revocation_state"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "performed": {
+          "type": "boolean"
+        },
+        "revocation_state": {
+          "enum": [
+            "clear",
+            "revoked",
+            "unknown",
+            "not_checked"
+          ]
+        }
+      }
+    },
+    "permit": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "permit_id",
+        "issued_at",
+        "expires_at",
+        "single_use"
+      ],
+      "properties": {
+        "permit_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "single_use": {
+          "const": true
+        }
+      }
+    },
+    "single_use": {
+      "const": true
+    }
+  }
+}
