@@ -11,6 +11,9 @@ requires-python = ">=3.10"
 authors = [{name = "Brittany Wright"}]
 dependencies = []
 
+[project.optional-dependencies]
+test = ["jsonschema>=4.23,<5"]
+
 [project.scripts]
 trust-receipt = "trust_receipt.cli:main"
 
