@@ -171,9 +171,15 @@ class TrajectoryGovernanceContractTests(unittest.TestCase):
                     case["expected_result"] == "ALLOW",
                     case["case_id"]
                 )
+            elif case["result_kind"] == "execution":
+                self.assertIn(case["expected_result"], {
+                    "OUTCOME_VERIFIED", "EXECUTION_FAILED_RECORDED", "PARTIAL_OUTCOME_RECORDED"
+                }, case["case_id"])
+                self.assertIs(case["execution_permitted"], True, case["case_id"])
+            elif case["result_kind"] == "evidence":
+                self.assertIsNone(case["execution_permitted"], case["case_id"]) if case["case_id"] != "EVD-049" else self.assertIs(case["execution_permitted"], False, case["case_id"])
             else:
-                self.assertIn(case["result_kind"], {"execution", "evidence"}, case["case_id"])
-                self.assertIsNone(case["execution_permitted"]) if case["case_id"] != "EVD-049" and case["case_id"] not in {"EXE-034", "EXE-036", "EXE-039"} else None
+                self.fail(f"Unknown result kind for {case['case_id']}")
 
     def test_critical_scenarios_are_never_execution_permitted_when_denied(self):
         catalog = load_json(FIXTURES / "trajectory-governance-cases.v0.1.json")
